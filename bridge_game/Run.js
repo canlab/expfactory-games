@@ -375,20 +375,20 @@ Game.Run.prototype = {
     }
     this.pointDisplay.setText("Points: " + this.points)
 
-    this.subject.inputData('answer', this.userBridge.length)
-    this.subject.inputData('problem', [this.problem[0],' + ','?',' = ',this.problem[2]].join(""))
-    this.subject.inputData('n1', parseInt(this.problem[0]))
-    this.subject.inputData('n2', parseInt(this.problem[1]))
-    this.subject.inputData('points', this.points)
+    //this.subject.inputData('answer', this.userBridge.length)
+    //this.subject.inputData('problem', [this.problem[0],' + ','?',' = ',this.problem[2]].join(""))
+    //this.subject.inputData('n1', parseInt(this.problem[0]))
+    ////this.subject.inputData('n2', parseInt(this.problem[1]))
+    //this.subject.inputData('points', this.points)
     //this.subject.inputData('problem_id', parseInt(this.problem[3]))
-    this.subject.inputData('solution', parseInt(this.problem[2]))
-    this.subject.inputData('RT', this.RT/1000)
+    //this.subject.inputData('solution', parseInt(this.problem[2]))
+    //this.subject.inputData('RT', this.RT/1000)
 
-     if (this.userBridge.length == this.problem[1]) {
-       this.subject.inputData('ACC', 1)
-     } else {
-       this.subject.inputData('ACC', 0)
-     }
+     //if (this.userBridge.length == this.problem[1]) {
+     //  this.subject.inputData('ACC', 1)
+     //} else {
+     //  this.subject.inputData('ACC', 0)
+     // }
 
     this.numGraded++
     //this.subject.sendData(this.numGraded)
