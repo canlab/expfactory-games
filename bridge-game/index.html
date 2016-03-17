@@ -1,0 +1,41 @@
+<html>
+<!doctype html>
+<html>
+    <head>
+        <meta charset="UTF-8" />
+        <title>Guinea Run</title>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/phaser/2.4.6/phaser.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+        <script src="js/box2d-plugin-full.min.js" type="text/javascript"></script>
+        <script src="js/Boot.js"></script>
+        <script src="js/Preloader.js"></script>
+        <script src="js/Menu.js"></script>
+        <script src="js/Instructions.js"></script>
+        <script src="js/Bridge_Game.js"></script>
+        <script src="js/problems.js"></script>
+    </head>
+
+    <script type="text/javascript">
+
+    window.onload = function() {
+
+      //create the game and the game states
+      var game = new Phaser.Game(960, 600, Phaser.CANVAS, 'gameContainer')
+
+      problem_set = "A"
+
+      game.state.add('Boot', Game.Boot)
+      game.state.add('Preloader', Game.Preloader)
+      game.state.add('Menu',Game.Menu)
+      game.state.add('Instructions', Game.Instructions)
+      game.state.add('Bridge_Game', Game.Bridge_Game)
+
+      //	Now start the Boot state.
+      game.state.start('Boot', true, false, problem_set)
+
+    }
+
+    </script>
+
+    <body>
+</html>
