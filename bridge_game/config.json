@@ -10,7 +10,7 @@
                 "Preloader.js",
                 "Menu.js",
                 "Instructions.js",
-                "Bridge_Game.js",
+                "Run.js",
                 "problems.js"
                ],
         "exp_id": "bridge_game",
@@ -23,6 +23,6 @@
         "time":999,
         "reference": "",
         "publish":"True",
-        "deployment_variables": {"run":"//create the game and the game states\nvar game = new Phaser.Game(960, 600, Phaser.CANVAS, 'gameContainer')\nproblem_set='A'\ngame.state.add('Boot', Game.Boot)\ngame.state.add('Preloader', Game.Preloader)\ngame.state.add('Menu',Game.Menu)\ngame.state.add('Instructions', Game.Instructions)\ngame.state.add('Bridge_Game', Game.Bridge_Game)\n//Now start the Boot state.\ngame.state.start('Boot', true, false, problem_set)\n"}
+        "deployment_variables": {"run":"//create the game and the game states\nvar game = new Phaser.Game(960, 600, Phaser.CANVAS, 'gameContainer')\nproblem_set='A'\ngame.state.add('Boot', Game.Boot)\ngame.state.add('Preloader', Game.Preloader)\ngame.state.add('Menu',Game.Menu)\ngame.state.add('Instructions', Game.Instructions)\ngame.state.add('Run', Game.Run)\n//Now start the Boot state.\ngame.state.start('Boot', true, false, problem_set)\n"}
     }
 ]
