@@ -36,6 +36,7 @@ Game.Run = function(game) {
   this.prevTime = 0
   this.numFeedback = 'null'
   this.gameFinished = 'null'
+
 };
 
 Game.Run.prototype = {
@@ -374,24 +375,30 @@ Game.Run.prototype = {
       this.points -= 1
     }
     this.pointDisplay.setText("Points: " + this.points)
-
-    //this.subject.inputData('answer', this.userBridge.length)
-    //this.subject.inputData('problem', [this.problem[0],' + ','?',' = ',this.problem[2]].join(""))
-    //this.subject.inputData('n1', parseInt(this.problem[0]))
-    ////this.subject.inputData('n2', parseInt(this.problem[1]))
-    //this.subject.inputData('points', this.points)
-    //this.subject.inputData('problem_id', parseInt(this.problem[3]))
-    //this.subject.inputData('solution', parseInt(this.problem[2]))
-    //this.subject.inputData('RT', this.RT/1000)
-
-     //if (this.userBridge.length == this.problem[1]) {
-     //  this.subject.inputData('ACC', 1)
-     //} else {
-     //  this.subject.inputData('ACC', 0)
-     // }
-
     this.numGraded++
-    //this.subject.sendData(this.numGraded)
+
+    this.save(this.numGraded)
+
+  },
+
+  save: function (curr_trial) {
+    inputData('answer', this.userBridge.length)
+    inputData('problem', [this.problem[0],' + ','?',' = ',this.problem[2]].join(""))
+    inputData('n1', parseInt(this.problem[0]))
+    inputData('n2', parseInt(this.problem[1]))
+    inputData('points', this.points)
+    //inputData('problem_id', parseInt(this.problem[3]))
+    inputData('solution', parseInt(this.problem[2]))
+    inputData('RT', this.RT/1000)
+
+     if (this.userBridge.length == this.problem[1]) {
+      inputData('ACC', 1)
+     } else {
+      inputData('ACC', 0)
+     }
+
+     this.numGraded++
+     sendData(curr_trial)
 
   },
 
@@ -580,7 +587,7 @@ Game.Run.prototype = {
       endTime = d.getTime()
 
       this.gameFinished = false
-      this.subject.inputData('endGameStats', [this.start_time, endTime, 'completed'])
+      //this.subject.inputData('endGameStats', [this.start_time, endTime, 'completed'])
 
       //nextTask(this.results[0], this.task)
 
