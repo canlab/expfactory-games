@@ -376,7 +376,7 @@ Game.Run.prototype = {
     }
     this.pointDisplay.setText("Points: " + this.points)
     this.numGraded++
-    
+
     this.save(this.numGraded)
 
   },
@@ -587,7 +587,7 @@ Game.Run.prototype = {
       endTime = d.getTime()
 
       this.gameFinished = false
-      this.subject.inputData('endGameStats', [this.start_time, endTime, 'completed'])
+      //this.subject.inputData('endGameStats', [this.start_time, endTime, 'completed'])
 
       //nextTask(this.results[0], this.task)
 
