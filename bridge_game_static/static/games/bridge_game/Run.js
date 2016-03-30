@@ -36,7 +36,7 @@ Game.Run = function(game) {
   this.prevTime = 0
   this.numFeedback = 'null'
   this.gameFinished = 'null'
-  this.trialData = []
+
 };
 
 Game.Run.prototype = {
@@ -375,31 +375,30 @@ Game.Run.prototype = {
       this.points -= 1
     }
     this.pointDisplay.setText("Points: " + this.points)
+    this.numGraded++
+    
+    this.save(this.numGraded)
 
-     //Try and generate these fields from index page
-     data = {}
-     data['answer'] = this.userBridge.length
-     data['problem'] =  [this.problem[0],' + ','?',' = ',this.problem[2]].join("")
-     data['n1'] = parseInt(this.problem[0])
-     data['n2'] = parseInt(this.problem[1])
-     data['points'] = this.points
-     data['problem_id'] = parseInt(this.problem[3])
-     data['solution'] = parseInt(this.problem[2])
-     data['RT'] = this.RT/1000
+  },
+
+  save: function (curr_trial) {
+    inputData('answer', this.userBridge.length)
+    inputData('problem', [this.problem[0],' + ','?',' = ',this.problem[2]].join(""))
+    inputData('n1', parseInt(this.problem[0]))
+    inputData('n2', parseInt(this.problem[1]))
+    inputData('points', this.points)
+    //inputData('problem_id', parseInt(this.problem[3]))
+    inputData('solution', parseInt(this.problem[2]))
+    inputData('RT', this.RT/1000)
+
      if (this.userBridge.length == this.problem[1]) {
-       data['ACC'] = 1
+      inputData('ACC', 1)
      } else {
-       data['ACC'] = 0
+      inputData('ACC', 0)
      }
 
-    this.numGraded++
-    data['trial'] = this.numGraded
-
-    this.trialData.push(data)
-    trialData = JSON.stringify(this.trialData)
-    //send trialData to template
-    this.trialData = [] //empty for next trial
-    console.log(trialData)
+     this.numGraded++
+     sendData(curr_trial)
 
   },
 

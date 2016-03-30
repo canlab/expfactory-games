@@ -15,31 +15,32 @@
         var counterbalance = "{{ counterbalance }}";
     </script>
 
-    [SUB_EXPERIMENTSTATIC_SUB]    
+    [SUB_EXPERIMENTSTATIC_SUB]
     <script src="static/js/load_experiments.js" type="text/javascript"></script>
-    <script src="static/js/psiturk.js" type="text/javascript"></script>		
-    <link rel='stylesheet' href='static/css/default_style.css' type="text/css">  
-  
+    <script src="static/js/psiturk.js" type="text/javascript"></script>
+    <link rel='stylesheet' href='static/css/default_style.css' type="text/css">
+
   </head>
   <body>
-	  
-	  <script> 
-	   
-              var psiturk = new PsiTurk(uniqueId, adServerLoc, mode);	    
+
+	  <script>
+
+              var psiturk = new PsiTurk(uniqueId, adServerLoc, mode);
 		var task_list = '<ul list-text>'
 		for (i=0; i<experiment_names.length; i++) {
 			task_list += '<li>' + experiment_names[i] + '</li>'
 		}
-      
-		
+
+
 		var task_list_block = {
 		  type: 'text',
 		  text: '<div class = centerbox><p class = block-text>In this HIT you will be completing the following tasks: </p>' + task_list + '</ul><p class = block-text>Press <strong>enter</strong> to continue.</p></div>',
 		  cont_key: [13],
 		};
-				
+
 		var experiments = []
 		experiments.push(task_list_block)
+    console.log("UPiapdfa")
 
 		// concatenate on the experimental blocks defined for each of the constituent experiments
 		cat_experiments(experiments)
@@ -48,7 +49,7 @@
 
 		// start the experiment -->
 		jsPsych.init({
-	
+
  	            timeline: experiments,
                     display_element: "getDisplayElement",
                     fullscreen: true,
@@ -63,7 +64,7 @@
                      }
 		});
 
-          });		
+          });
 	  </script>
   </body>
 </html>
