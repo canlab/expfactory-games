@@ -397,6 +397,14 @@ Game.Run.prototype = {
       inputData('ACC', 0)
      }
 
+     // if trial number is larger than numer of problems
+     // and their answer was correct then the game is finished
+     if ((this.trial) >= this.op1s.length && this.correct == true) {
+       inputData('finished', 1)
+     } else {
+       inputData('finished', 0)
+     }
+
      this.numGraded++
      sendData(curr_trial)
 
