@@ -375,8 +375,8 @@ Game.Run.prototype = {
       this.points -= 1
     }
     this.pointDisplay.setText("Points: " + this.points)
-    this.numGraded++
 
+    this.numGraded++
     this.save(this.numGraded)
 
   },
@@ -405,7 +405,6 @@ Game.Run.prototype = {
        inputData('finished', 0)
      }
 
-     this.numGraded++
      sendData(curr_trial)
 
   },
