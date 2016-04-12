@@ -327,10 +327,14 @@ Game.Run.prototype = {
     }
 
     this.numGraded++
+
+    if ((this.numGraded) >= this.op1s.length && this.answer == 'correct') {
+      inputData('finished', 1)
+    } else {
+      inputData('finished', 0)
+    }
+
     sendData(this.numGraded)
-
-
-     sendData(curr_trial)
 
   },
 
