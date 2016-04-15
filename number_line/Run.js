@@ -244,7 +244,7 @@ Game.Run.prototype = {
       }
       inputData('points', this.points)
 
-      if (this.numGraded >= this.op1s.length && this.correct) {
+      if (this.trial >= this.op1s.length && this.correct) {
         inputData('finished', 1)
       } else {
         inputData('finished', 0)

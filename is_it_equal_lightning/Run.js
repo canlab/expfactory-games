@@ -222,8 +222,7 @@ Game.Run.prototype = {
     } else {
       inputData('ACC',0)
     }
-
-    if (this.numGraded >= this.op1s.length && this.answer == 'correct') {
+    if (this.trial >= this.op1s.length && this.answer == 'correct') {
       inputData('finished', 1)
     } else {
       inputData('finished', 0)
@@ -372,7 +371,7 @@ Game.Run.prototype = {
         totalPoints = this.points
         this.points = 0
                 //  Then let's go back to the main menu.
-        this.game.time.events.add(Phaser.Timer.SECOND * 2, function() {this.state.start('gamePlay', true, false, totalPoints, tasks_to_play, this.week, this.problem_set);}, this);
+        this.game.time.events.add(Phaser.Timer.SECOND * 2, function() {this.state.start('Menu', true, false,this.problem_set);}, this);
       }, this);
   }
 
