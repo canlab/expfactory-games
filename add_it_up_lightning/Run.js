@@ -311,7 +311,7 @@ Game.Run.prototype = {
 
 
     this.game.time.events.add(Phaser.Timer.SECOND, function() {
-        this.stars.visible = false;
+        //this.stars.visible = false;
         this.feedback.visible = false;
         this.numFeedback.visible = false;
         this.game.add.tween(this.problem.problem).to( { alpha: 1 }, 100, "Linear", true);
