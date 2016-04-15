@@ -247,7 +247,6 @@ Game.Run.prototype = {
       if (this.numGraded >= this.op1s.length && this.correct) {
         inputData('finished', 1)
       } else {
-        console.log(0)
         inputData('finished', 0)
       }
 
