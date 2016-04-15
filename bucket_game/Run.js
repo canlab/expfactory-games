@@ -158,7 +158,7 @@ Game.Run.prototype = {
     d = new Date()
     this.start_time = d.getTime()
 
-    this.equal = this.game.add.button(340, 500, 'equalB')
+    this.equal = this.game.add.button(500, 500, 'equalB')
     this.equal.scale.x = .3
     this.equal.scale.y = .3
     this.equal.onInputDown.add(function() {
@@ -175,7 +175,7 @@ Game.Run.prototype = {
       }, 1000)
     }, this)
 
-    this.unequal = this.game.add.button(500, 500, 'unequalB')
+    this.unequal = this.game.add.button(340, 500, 'unequalB')
     this.unequal.scale.x = 0.3
     this.unequal.scale.y = 0.3
     this.unequal.onInputDown.add(function() {
