@@ -371,7 +371,7 @@ Game.Run.prototype = {
         totalPoints = this.points
         this.points = 0
                 //  Then let's go back to the main menu.
-        this.game.time.events.add(Phaser.Timer.SECOND * 2, function() {this.state.start('Menu', true, false,this.problem_set);}, this);
+        //this.game.time.events.add(Phaser.Timer.SECOND * 2, function() {this.state.start('Menu', true, false,this.problem_set);}, this);
       }, this);
   }
 
