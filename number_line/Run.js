@@ -36,7 +36,7 @@ Game.Run.prototype = {
       problems = problemGen(this.week, this.problem_set)
       this.op1s = problems[1]
       this.op2s = problems[2]
-      //this.problem_ids = problems[3]
+      this.problem_ids = problems[3]
 
       //task info
       this.task = 'VS_production'
@@ -158,7 +158,7 @@ Game.Run.prototype = {
       this.problem[0] = +op1;
       this.problem[1] = +op2;
       this.problem[2] = +op1 + +op2;
-      //this.problem[3] = this.problem_ids[this.trial]
+      this.problem[3] = this.problem_ids[this.trial]
 
       this.answerTxt = [this.problem[0],' + ',this.problem[1]]
       this.answerTxt = this.answerTxt.join('')
@@ -229,7 +229,7 @@ Game.Run.prototype = {
       inputData('RT', this.RT/1000)
       inputData('n1', parseInt(this.problem[0]))
       inputData('n2', parseInt(this.problem[1]))
-      //inputData('problem_id', parseInt(this.problem[3]))
+      inputData('problem_id', parseInt(this.problem[3]))
       inputData('solution', parseInt(this.problem[2]))
 
       if (this.correct) {

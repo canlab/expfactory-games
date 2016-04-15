@@ -50,7 +50,7 @@ Game.Run.prototype = {
     problems = problemGen(this.week, this.problem_set)
     this.op1s = problems[1]
     this.op2s = problems[2]
-    //this.problem_ids = problems[3]
+    this.problem_ids = problems[3]
 
     //task info
     this.task = 'VS_verification'
@@ -360,11 +360,13 @@ Game.Run.prototype = {
       this.problem[0] = +op1;
       this.problem[1] = +op2;
       this.problem[2] = +op1 + +op2;
+      this.problem[3] = this.problem_ids[this.trial]
       this.trial++
     } else if (this.answer == "incorrect") {
       this.problem[0] = this.problem[0]
       this.problem[1] = this.problem[1]
       this.problem[2] = this.problem[2]
+      this.problem[3] = this.problem[3]
     }
 
     this.dispenser1 = this.game.add.sprite(100,-130,'dispenser')

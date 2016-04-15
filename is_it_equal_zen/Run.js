@@ -41,7 +41,7 @@ Game.Run.prototype = {
     reProblems = problemGen(this.week, this.problem_set) //repeat problem set in SPT
     this.op1s = problems[1].concat(reProblems[1])
     this.op2s = problems[2].concat(reProblems[2])
-    //this.problem_ids = problems[3].concat(reProblems[3])
+    this.problem_ids = problems[3].concat(reProblems[3])
 
     //task info
     if (this.maxTime != 0) {
@@ -214,7 +214,7 @@ Game.Run.prototype = {
     inputData('n1', this.op1s[this.trial-1])
     inputData('n2', this.op2s[this.trial-1])
     inputData('points', this.points)
-    //this.subject.inputData('problem_id', this.problem_ids[this.trial-1])
+    inputData('problem_id', this.problem_ids[this.trial-1])
     inputData('solution', this.op1s[this.trial-1] + this.op2s[this.trial-1])
 
     if (this.answer == 'correct') {

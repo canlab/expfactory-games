@@ -32,6 +32,7 @@ Game.Preloader.prototype = {
 		this.game.load.physics('smalljarData', '/static/games/bucket_game/images/jar2.json')
 		this.game.load.image('balancingact', '/static/games/bucket_game/images/BalancingAct_Button.png')
 
+
 	},
 
 	create: function () {

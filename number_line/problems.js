@@ -1,5 +1,12 @@
 // creating dependencies related to problems for all games
 
+range = function(start, count) {
+    return Array.apply(0, Array(count))
+                .map(function (element, index) {
+                         return index + start
+                     })
+}
+
 problemGen = function(problem_set) {
 
   nProbs = 13
@@ -12,34 +19,42 @@ problemGen = function(problem_set) {
     op2_full = [3,4,5,7,8,6,9,8,7,9,8,9,13,14,15,17,18,16,12,13,13,12,12,14,19,18,17,19,18,19,13,14,16,15,17,18,2,3,3,2,2,4,3,4,6,5,7,8,2,3,3,2,2,4,3,4,5,7,8,6,3,4,6,5,7,8,9,8,7,9,8,9]
   }
 
+  problem_id = range(1,op1_full.length)
+
   op1s = []
   op2s = []
+  ids = []
   for (i=0; i < nProbs; i++) {
 
-    op1s.push(op1_full[Math.floor(Math.random()*op1_full.length)])
-    op2s.push(op2_full[Math.floor(Math.random()*op2_full.length)])
-
+    //op1s.push(op1_full[Math.floor(Math.random()*op1_full.length)])
+    //op2s.push(op2_full[Math.floor(Math.random()*op2_full.length)])
+    //ids.push(problem_id[Math.floor(Math.random()*problem_id.length)])
+    op1s.push(op1_full[i])
+    op2s.push(op2_full[i])
+    ids.push(problem_id[i])
   }
+  op1s, op2s, ids = shuffle(op1s, op2s, ids)
 
-  op1s, op2s = shuffle(op1s, op2s)
-
-  return [problem_set, op1s, op2s]
+  return [problem_set, op1s, op2s, ids]
 }
 
 //shuffle matched operands using Fisher-Yates shuffle
-function shuffle(array1, array2) {
-  var currInd = array1.length, tempVal1, tempVal2, randInd
+function shuffle(array1, array2, array3) {
+  var currInd = array1.length, tempVal1, tempVal2, tempVal3, randInd
   while (0 != currInd) {
     randInd = Math.floor(Math.random() * currInd)
     currInd -= 1
     tempVal1 = array1[currInd]
     tempVal2 = array2[currInd]
+    tempVal3 = array3[currInd]
     array1[currInd] = array1[randInd]
     array2[currInd] = array2[randInd]
+    array3[currInd] = array3[randInd]
     array1[randInd] = tempVal1
     array2[randInd] = tempVal2
+    array3[randInd] = tempVal3
   }
-  return array1, array2
+  return array1, array2, array3
 }
 
 //for verification tasks

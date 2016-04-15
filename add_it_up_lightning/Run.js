@@ -62,7 +62,7 @@ Game.Run.prototype = {
       reProblems = problemGen(this.week, this.problem_set) //repeat problem set in SPT
       this.op1s = problems[1].concat(reProblems[1])
       this.op2s = problems[2].concat(reProblems[2])
-      //this.problem_ids = problems[3].concat(reProblems[3])
+      this.problem_ids = problems[3].concat(reProblems[3])
 
       if (this.algebra) {
         if (this.maxTime != 0) {
@@ -251,7 +251,7 @@ Game.Run.prototype = {
 
     inputData('n1', this.op1s[this.trial])
     inputData('n2', this.op2s[this.trial])
-    //inputData('problem_id', this.problem_ids[this.trial])
+    inputData('problem_id', this.problem_ids[this.trial])
     inputData('points', this.points)
     inputData('solution', this.op1s[this.trial] + this.op2s[this.trial])
     inputData('RT', this.stats.RT/1000)
