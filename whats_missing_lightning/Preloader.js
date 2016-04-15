@@ -22,7 +22,7 @@ Game.Preloader.prototype = {
 		//	Here we load the rest of the assets our game needs.
 		//	As this is just a Project Template I've not provided these assets, swap them for your own.
 		for (i=0; i<10; i++) {
-			this.game.load.image('k' + i, 'images/Keyboard_' + i + '.png');
+			this.game.load.image('k' + i, '/static/games/whats_missing_lightning/images/Keyboard_' + i + '.png');
 		}
 
 		this.game.load.image('delete', '/static/games/whats_missing_lightning/images/Delete_button.png');
