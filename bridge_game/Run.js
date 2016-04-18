@@ -134,6 +134,19 @@ Game.Run.prototype = {
     }, this)
     this.cross.fixedToCamera = true;
 
+
+    if (this.is_touch_device()) {
+      this.clickType = this.game.input.pointer1
+    } else {
+      this.clickType = this.game.input.mousePointer
+    }
+
+  },
+
+  is_touch_device: function() {
+    return (('ontouchstart' in window)
+      || (navigator.MaxTouchPoints > 0)
+      || (navigator.msMaxTouchPoints > 0))
   },
 
   makeDude: function() {
@@ -242,7 +255,7 @@ Game.Run.prototype = {
   },
 
   mouseDragMove: function() {
-    this.game.physics.box2d.mouseDragMove(this.game.input.mousePointer);
+    this.game.physics.box2d.mouseDragMove(this.clickType);
   },
 
   mouseDragEnd: function() {
@@ -551,9 +564,9 @@ Game.Run.prototype = {
     }
 
     if (this.userX > 200) {
-      mouseX = this.game.input.mousePointer.x + (this.userX - this.game.input.mousePointer.x)
+      mouseX = this.clickType.x + (this.userX - this.clickType.x)
     } else {
-      mouseX = this.game.input.mousePointer.x
+      mouseX = this.clickType.x
     }
 
     if (this.userY == 500) {
@@ -561,7 +574,7 @@ Game.Run.prototype = {
     }
 
       if (mouseX >= this.userX - this.clickMargin && mouseX <= this.userX + this.clickMargin) {
-        if (this.game.input.mousePointer.y <= this.userY - this.blockLength && this.game.input.mousePointer.y >= this.userY - this.clickMargin) {
+        if (this.clickType.y <= this.userY - this.blockLength && this.clickType.y >= this.userY - this.clickMargin) {
           this.userY = this.userY - this.blockLength;
           block = this.userBridge.create(this.userX,this.userY,'brick')
           block.body.immovable = true;
@@ -572,7 +585,7 @@ Game.Run.prototype = {
           this.userBlockText = this.game.add.text(this.userX+10, this.userY-20, this.userBridge.length,{font: "18px Arial", fill: "#FFFFFF", align: "center"})
           this.userBlockText.anchor.x = 0.5
 
-        } else if (this.game.input.mousePointer.y >= this.userY + this.blockLength && this.game.input.mousePointer.y <= this.userY + this.clickMargin) {
+        } else if (this.clickType.y >= this.userY + this.blockLength && this.clickType.y <= this.userY + this.clickMargin) {
           this.userBridge.forEach(function(block) {
             this.removeBlocks(block)
           }, this)

@@ -109,6 +109,20 @@ Game.Run.prototype = {
       this.front = this.makeFollower(1000, 0x3232ff,-1000,250)
       this.occlude()
 
+      if (this.is_touch_device()) {
+        this.clickType = this.game.input.pointer1
+      } else {
+        this.clickType = this.game.input.mousePointer
+      }
+
+      console.log(this.is_touch_device())
+
+    },
+
+    is_touch_device: function() {
+      return (('ontouchstart' in window)
+        || (navigator.MaxTouchPoints > 0)
+        || (navigator.msMaxTouchPoints > 0))
     },
 
     mouseDragStart: function() {
@@ -309,10 +323,8 @@ Game.Run.prototype = {
 
     update: function() {
 
-      //pointerX = this.game.input.pointer1.x
-      //pointerY = this.game.input.pointer1.y
-      pointerX = this.game.input.mousePointer.x
-      pointerY = this.game.input.mousePointer.y
+      pointerX = this.clickType.x
+      pointerY = this.clickType.y
 
       if (this.mouseDown && pointerX >= this.mover.x - 50  && pointerX <= this.mover.x + 50 && pointerY >= this.mainLineY-20 && pointerY <= this.mainLineY+20) {
         if (pointerX < this.mainLineLength+50 && pointerX > this.mainLineX) {
