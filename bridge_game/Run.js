@@ -66,7 +66,7 @@ Game.Run.prototype = {
     //this.subject = new Subject(user, this.task, task_type, this.problem_set, session, play)
 
     this.game.world.setBounds(0,0,this.op1s.length*1000,600)
-    this.game.add.tileSprite(0,0,this.op1s.length*1000,600,'background')
+    //this.game.add.tileSprite(0,0,this.op1s.length*1000,600,'background')
     //this.game.stage.backgroundColor = '#02425B'
 
     d = new Date()
