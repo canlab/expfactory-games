@@ -108,13 +108,13 @@ Game.Run.prototype = {
       }
 
       //make problem display
-      this.problem = new HorizontalProblem(this.game, this.game.world.centerX + 80, 90);
+      this.problem = new HorizontalProblem(this.game, this.game.width/4-170, 90);
 
       //make stats
       this.stats = createStats(this.game, 475, 20);
 
       //make keypad
-      this.keypad = makeKeypad(this.game, this.game.width/4-100, this.game.height/4, this.onPress, this.onSubmit, this);
+      this.keypad = makeKeypad(this.game, this.game.world.centerX + 360, this.game.height/4, this.onPress, this.onSubmit, this);
 
       var d = new Date()
       this.gameStartTime = d.getTime()
