@@ -325,7 +325,7 @@ Game.Run.prototype = {
     }, that)
   }, 1100)
 
-  //this.save(this.numGraded)
+  this.save(this.numGraded)
 
   },
 

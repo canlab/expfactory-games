@@ -273,7 +273,7 @@ Game.Run.prototype = {
       this.clock.onComplete.add(this.endTrial, this)
     }
 
-    //this.save()
+    this.save()
 
 
     this.stats.children[1].text=this.stats.points;

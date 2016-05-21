@@ -215,7 +215,7 @@ Game.Run.prototype = {
 
     this.onSubmit()
 
-  //  this.save()
+    this.save()
 
 
   },

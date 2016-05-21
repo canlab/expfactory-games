@@ -455,7 +455,7 @@ Game.Run.prototype = {
   grade: function(time_stamp) {
 
     this.numGraded++
-    //this.save(this.numGraded)
+    this.save(this.numGraded)
 
   },
 
