@@ -40,6 +40,8 @@ Game.Run = function (game) {
     this.pressed = false;
     this.numGraded = 0;
     this.points = 0
+    this.reps = 0
+    this.streak = 0
 
 };
 
@@ -58,8 +60,8 @@ Game.Run.prototype = {
   },
 
   create: function () {
-      problems = problemGen(this.week, this.problem_set)
-      reProblems = problemGen(this.week, this.problem_set) //repeat problem set in SPT
+      problems = [[],[4,17],[2,9],[0,1]]//problemGen(this.week, this.problem_set)
+      reProblems = [[],[4,17],[2,9],[0,1]]//problemGen(this.week, this.problem_set) //repeat problem set in SPT
       this.op1s = problems[1].concat(reProblems[1])
       this.op2s = problems[2].concat(reProblems[2])
       this.problem_ids = problems[3].concat(reProblems[3])
@@ -92,7 +94,7 @@ Game.Run.prototype = {
       //background.height = this.game.height
       this.trial = -1;
 
-      this.feedback = this.game.add.text(this.game.width/2, 200, 'X', {font:'96px Arial', fill:'#FFFFFF', align:'center'});
+      this.feedback = this.game.add.text(this.game.width/2, 200, 'X', {font:'80px Arial', fill:'#FFFFFF', align:'center'});
       this.feedback.anchor.setTo(0.5, 0.5);
       this.feedback.visible = false;
 
@@ -138,8 +140,9 @@ Game.Run.prototype = {
     }
 
     if (typeof(this.correct) != 'undefined') {
-      if (this.correct == true) {
+      if (this.correct == true || this.reps == 3) {
         this.trial++
+        this.reps = 0
       } else {
         this.trial = this.trial
       }
@@ -150,7 +153,7 @@ Game.Run.prototype = {
     this.progress = this.game.add.text(860, 560, this.trial+1 + ' out of 26', {font:'30px Arial', fill:'#FFFFFF', align:'center'})
     this.progress.anchor.x = 0.5
 
-    this.pointDisplay = this.game.add.text(85, 560, 'Points: ' + this.points, {font:'30px Arial', fill:'#FFFFFF', align:'center'})
+    this.pointDisplay = this.game.add.text(85, 560, 'Coins: ' + this.points, {font:'30px Arial', fill:'#FFFFFF', align:'center'})
     this.pointDisplay.anchor.x = 0.5
 
 
@@ -189,6 +192,17 @@ Game.Run.prototype = {
     var d = new Date();
     this.stats.RT = d.getTime() - this.start_time;
     this.grade(d.getTime());
+
+    if (!this.correct) {
+      this.streak = 0
+      this.reps += 1
+    } else {
+      if (this.reps == 0) {
+        this.streak += 1
+      }
+      this.reps = 0
+    }
+
     this.giveFeedback();
     if ((this.trial +1) >= this.op1s.length && this.correct == true) {
       this.quitGame();
@@ -210,18 +224,44 @@ Game.Run.prototype = {
     if (this.user_answer == correct_answer) {
       this.points+=1
       this.correct = true;
-      correct_feedback = ['Way to go!','Awesome!','You Rock!','Correct!','Fantastic!','Nice!']
-      feedbackIndex = Math.floor(Math.random() * correct_feedback.length) + 0
-      this.feedback.text = correct_feedback[feedbackIndex]
+      //off by one bc of grade order
+      if (this.streak == 2) {
+        this.feedback.text = "3 in a row! Extra coin!"
+        this.feedback.fill = '#3CF948'
+        //change color to green...
+        this.points+=1
+      } else if (this.streak == 6) {
+        this.feedback.text = "7 in a row! Extra coin!"
+        this.feedback.fill = '#3CF948'
+        this.points+=1
+      } else if (this.streak == 14) {
+        this.feedback.text = "15 in a row! Extra coin!"
+        this.feedback.fill = '#3CF948'
+        this.points+=1
+      } else if (this.streak == 25) {
+        this.feedback.text = "Perfect Score! Extra coin!"
+        this.feedback.fill = '#3CF948'
+        this.points+=1
+      } else {
+        correct_feedback = ['Way to go!','Awesome!','You Rock!','Correct!','Fantastic!','Nice!']
+        feedbackIndex = Math.floor(Math.random() * correct_feedback.length) + 0
+        this.feedback.text = correct_feedback[feedbackIndex]
+        this.feedback.fill = '#FFFFFF'
+      }
       this.stats.points++;
 
       if (this.maxTime != 0) {
         this.maxTime = this.ogMaxTime;
       }
     } else {
-      this.points-=1
+      if (this.points == 0) {
+        this.points = 0
+      } else {
+        this.points -= 1
+      }
       this.correct = false;
       this.feedback.text = 'Try Again!'
+      this.feedback.fill = '#FFFFFF'
       this.stats.points--;
       if (this.maxTime != 0) {
         this.maxTime += 1000
@@ -233,7 +273,7 @@ Game.Run.prototype = {
       this.clock.onComplete.add(this.endTrial, this)
     }
 
-    this.save()
+    //this.save()
 
 
     this.stats.children[1].text=this.stats.points;
@@ -278,35 +318,55 @@ Game.Run.prototype = {
       this.numFeedback = this.game.add.text(0,0,'null')
       this.numFeedback.visible = false
 
-    if (this.correct==true) {
-      //this.stars.visible = true;
-      this.feedback.visible = true;
-      this.game.world.remove(this.progress)
-      this.game.world.remove(this.pointDisplay)
-      if (!this.algebra) {
-        this.numFeedback = this.game.add.text(this.game.width/2, 300, parseInt(op1) + ' + ' + parseInt(op2) + ' = ' + this.user_answer, {font:'80px Arial', fill:'#FFFFFF', align:'center'});
+    if (this.reps != 3) {
+      if (this.correct==true) {
+        //this.stars.visible = true;
+        this.feedback.visible = true;
+        this.game.world.remove(this.progress)
+        this.game.world.remove(this.pointDisplay)
+        if (!this.algebra) {
+          this.numFeedback = this.game.add.text(this.game.width/2, 300, parseInt(op1) + ' + ' + parseInt(op2) + ' = ' + this.user_answer, {font:'80px Arial', fill:'#FFFFFF', align:'center'});
+        } else {
+          this.numFeedback = this.game.add.text(this.game.width/2, 300, parseInt(op1) + ' + ' + this.user_answer + ' = ' + (parseInt(op1)+parseInt(op2)), {font:'80px Arial', fill:'#FFFFFF', align:'center'});
+        }
+        this.numFeedback.visible = true;
+        this.numFeedback.anchor.x = 0.5;
+        this.game.world.remove(this.progress)
+        this.game.world.remove(this.pointDisplay)
       } else {
-        this.numFeedback = this.game.add.text(this.game.width/2, 300, parseInt(op1) + ' + ' + this.user_answer + ' = ' + (parseInt(op1)+parseInt(op2)), {font:'80px Arial', fill:'#FFFFFF', align:'center'});
+        this.feedback.visible = true;
+        if (isNaN(this.user_answer)) {
+          this.numFeedback = this.game.add.text(this.game.width/2, 300, " ", {font:'80px Arial', fill:'#FFFFFF', align:'center'});
+        } else {
+          if (!this.algebra) {
+            this.numFeedback = this.game.add.text(this.game.width/2, 300, parseInt(op1) + ' + ' + parseInt(op2) + ' ≠ ' + this.user_answer, {font:'80px Arial', fill:'#FFFFFF', align:'center'});
+          } else {
+            this.numFeedback = this.game.add.text(this.game.width/2, 300, parseInt(op1) + ' + ' + this.user_answer + ' ≠ ' + (parseInt(op1)+parseInt(op2)), {font:'80px Arial', fill:'#FFFFFF', align:'center'});
+          }
+        }
+        this.numFeedback.visible = true;
+        this.numFeedback.anchor.x = 0.5;
+        this.game.world.remove(this.progress)
+        this.game.world.remove(this.pointDisplay)
       }
-      this.numFeedback.visible = true;
-      this.numFeedback.anchor.x = 0.5;
-      this.game.world.remove(this.progress)
-      this.game.world.remove(this.pointDisplay)
     } else {
-      this.feedback.visible = true;
+      this.feedback.text = "Sorry, the correct answer is"
+      this.feedback.cssFont = '70px Arial'
+      this.feedback.visible = true
       if (isNaN(this.user_answer)) {
         this.numFeedback = this.game.add.text(this.game.width/2, 300, " ", {font:'80px Arial', fill:'#FFFFFF', align:'center'});
       } else {
         if (!this.algebra) {
-          this.numFeedback = this.game.add.text(this.game.width/2, 300, parseInt(op1) + ' + ' + parseInt(op2) + ' ≠ ' + this.user_answer, {font:'80px Arial', fill:'#FFFFFF', align:'center'});
+          this.numFeedback = this.game.add.text(this.game.width/2, 300, parseInt(op1) + ' + ' + parseInt(op2) + ' = ' + (parseInt(op1)+parseInt(op2)), {font:'80px Arial', fill:'#FFFFFF', align:'center'});
         } else {
-          this.numFeedback = this.game.add.text(this.game.width/2, 300, parseInt(op1) + ' + ' + this.user_answer + ' ≠ ' + (parseInt(op1)+parseInt(op2)), {font:'80px Arial', fill:'#FFFFFF', align:'center'});
+          this.numFeedback = this.game.add.text(this.game.width/2, 300, parseInt(op1) + ' + ' + parseInt(op2) + ' = ' + (parseInt(op1)+parseInt(op2)), {font:'80px Arial', fill:'#FFFFFF', align:'center'});
         }
       }
       this.numFeedback.visible = true;
       this.numFeedback.anchor.x = 0.5;
       this.game.world.remove(this.progress)
       this.game.world.remove(this.pointDisplay)
+
     }
 
 

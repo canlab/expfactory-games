@@ -172,7 +172,7 @@ HorizontalProblem = function (game, x, y) {
   }
 }
 
-function giveFeedback(game, ans, x, y, font) {
+function giveFeedback(game, ans, streak, gametype,x, y, font) {
   d = new Date();
   fTime = d.getTime();
   correct_feedback = ['Way to go!','Awesome!','You Rock!','Correct!','Fantastic!','Nice!']
@@ -180,6 +180,21 @@ function giveFeedback(game, ans, x, y, font) {
   if (!ans) {
     disp = "Try Again!"
     disp_color = '#FFFFFF'
+  } else if (streak == 2) {
+    disp = "3 in a row! Extra coin!"
+    disp_color = '#3CF948'
+  } else if (streak == 6) {
+    disp = "7 in a row! Extra coin!"
+    disp_color = '#00F915'
+  } else if (streak == 12 && gametype == 'vnt') {
+    disp = "Perfect Score! Extra coin!"
+    disp_color = '#00F908'
+  } else if (streak == 15) {
+    disp = "15 in a row! Extra coin!"
+    disp_color = '#00F908'
+  } else if (streak == 26) {
+    disp = "Perfect Score! Extra coin!"
+    disp_color = '#00F908'
   } else {
     disp = correct_feedback[Math.floor(Math.random() * correct_feedback.length) + 0]
     disp_color = '#FFFFFF'

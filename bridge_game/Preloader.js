@@ -28,7 +28,10 @@ Game.Preloader.prototype = {
 		this.game.load.image('compCol', '/static/games/bridge_game/images/cloud-platform.png')
 		this.game.load.image('crossB','/static/games/bridge_game/images/cross_button.png')
 		this.game.load.image('bridgethegap', '/static/games/bridge_game/images/bridgethegap.png')
-                this.game.load.image('background', '/static/games/bridge_game/images/moon_background.png')
+    this.game.load.image('background', '/static/games/bridge_game/images/moon_background.png')
+		this.game.load.image('coin', '/static/games/bridge_game/images/coin_gold.png')
+		this.game.load.image('next', '/static/games/bridge_game/images/next_button.png')
+		this.game.load.image('back', '/static/games/bridge_game/images/back_button.png')
 
 	},
 

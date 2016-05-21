@@ -24,6 +24,10 @@ Game.Run = function (game) {
     this.numGraded = 0
     this.prevMoverX = 50
     this.points = 0
+    this.moveCoin = false
+    this.reps = 0
+    this.streak = 0
+    this.moveAddendLines = false
 
   };
 
@@ -33,7 +37,7 @@ Game.Run.prototype = {
     },
 
     create: function() {
-      problems = problemGen(this.week, this.problem_set)
+      problems = [[],[4,17],[2,9],[0,1]]//problemGen(this.week, this.problem_set)
       this.op1s = problems[1]
       this.op2s = problems[2]
       this.problem_ids = problems[3]
@@ -60,11 +64,10 @@ Game.Run.prototype = {
       this.progress.fixedToCamera = true
       this.progress.anchor.x = 0.5
 
-      this.pointDisplay = this.game.add.text(85, 560, 'Points: ' + this.points, {font:'30px Arial', fill:'#FFFFFF', align:'center'})
+      this.pointDisplay = this.game.add.text(85, 560, 'Coins: ' + this.points, {font:'30px Arial', fill:'#FFFFFF', align:'center'})
       this.pointDisplay.anchor.x = 0.5
       this.pointDisplay.fixedToCamera = true
 
-      this.nextTrial()
 
       this.mainLineY = 350
       this.mainLineX = 49
@@ -87,10 +90,14 @@ Game.Run.prototype = {
         hashX = hashX + 28.3
       }
 
+      this.nextTrial()
+
       this.mover = this.game.add.graphics(50,this.mainLineY-250)
       this.mover.beginFill(0x33cccc)
       this.mover.lineStyle(4,0x33cccc,1)
       this.mover.drawCircle(0, 250, 20)
+
+      this.makeDude(this.mover.x,this.mainLineY-20)
 
       submitButton = this.game.add.button(425, 500, 'go')
       submitButton.onInputUp.add(function() {
@@ -115,8 +122,6 @@ Game.Run.prototype = {
         this.clickType = this.game.input.mousePointer
       }
 
-      console.log(this.is_touch_device())
-
     },
 
     is_touch_device: function() {
@@ -138,6 +143,57 @@ Game.Run.prototype = {
       follower.beginFill(color, 1)
       follower.drawRect(-3, this.mainLineY-253, width, 6)
       return follower
+    },
+
+    addendLine: function(a,x,y) {
+      l_length = a * 28.3
+      l = this.game.add.graphics(x, y)
+      l.lineStyle(6, 0xFFFFFF)
+      l.lineTo(l_length, 0)
+
+      // hashX = 50
+      if (this.trial != 0 && a == this.problem[1]) {
+        numLabels = a+2
+      } else {
+        numLabels = a+1
+      }
+
+      metaGroup = this.game.add.group()
+      hashes = this.game.add.group()
+      labels = this.game.add.group()
+      hashX = x
+      for (i = 0; i < a+1; i++) {
+        hashMark = this.game.add.graphics(hashX,y - 2.22)
+        hashMark.lineStyle(5, 0xFFFFFF)
+        hashMark.lineTo(0,20)
+        hashes.add(hashMark)
+        hashX = hashX + 28.3
+      }
+      for (i = 0; i < numLabels; i++) {
+        label = this.game.add.text(x,y + 20,i,{font: "15px Arial", fill: "#FFFFFF", align: "center"})
+        label.anchor.x = 0.5
+        labels.add(label)
+        x = x + 28.3
+      }
+
+      //edgecase coverup
+      if (this.correct != undefined && a == this.problem[1]) {
+        rect = this.game.add.graphics(x-40,115)
+        rect.beginFill(0x000000, 1)
+        rect.drawRect(0,0, 20, 100)
+      }
+
+      metaGroup.add(hashes)
+      metaGroup.add(l)
+      metaGroup.add(labels)
+      return [l_length, metaGroup]
+    },
+
+    hideLine: function() {
+      rect = this.game.add.graphics(0,180)
+      rect.beginFill(0x000000, 1)
+      rect.drawRect(0,0, 1200, 100)
+
     },
 
     makeRect: function(x,y, length) {
@@ -174,13 +230,71 @@ Game.Run.prototype = {
       this.problem[2] = +op1 + +op2;
       this.problem[3] = this.problem_ids[this.trial]
 
-      this.answerTxt = [this.problem[0],' + ',this.problem[1]]
+      this.answerTxt = [this.problem[0],' + ',this.problem[1],' = ?']
       this.answerTxt = this.answerTxt.join('')
-      this.probText = this.game.add.text(480, 200, this.answerTxt, {font: "70px Arial", fill: "#FFFFFF", align: "center"})
-      this.probText.anchor.x = 0.5
+
+      if (this.mover) {
+        this.mover.x = 50
+        this.front.x = this.mover.x-1000
+      }
+      //this.probText = this.game.add.text(480, 75, this.answerTxt, {font: "70px Arial", fill: "#FFFFFF", align: "center"})
+      //this.probText.anchor.x = 0.5
+
+      this.placeCoin(this.problem[2],this.mainLineY-20)
+
+      this.addendLineMaker()
+
+
+      this.probTxtGroup = this.probTextMaker('=','?')
 
       this.trial++;
       this.progress.setText(this.trial + ' out of 13')
+    },
+
+    addendLineMaker: function() {
+      if (this.problem[2] > 19) {
+        a1_vals = this.addendLine(this.problem[0],50,150)
+        a1_len = a1_vals[0]
+        a2_vals = this.addendLine(this.problem[1],a1_len + 80,150)
+      } else {
+        a1_vals = this.addendLine(this.problem[0],50,150)
+        a1_len = a1_vals[0]
+        a2_vals = this.addendLine(this.problem[1],a1_len + 200,150)
+      }
+      this.a1_line = a1_vals[1]
+      this.a2_line = a2_vals[1]
+      a2_len = a2_vals[0]
+    },
+
+    probTextMaker: function(eq, sum) {
+      if (this.problem[2] > 19) {
+        probTxtGroup = this.game.add.group()
+        ad1Txt = this.game.add.text(a1_len/2, 50, this.problem[0], {font: "70px Arial", fill: "#FFFFFF", align: "center"}, probTxtGroup)
+        ad2Txt = this.game.add.text(a1_len+10+a2_len/2, 50, this.problem[1], {font: "70px Arial", fill: "#FFFFFF", align: "center"}, probTxtGroup)
+        plusTxt = this.game.add.text(a1_len+15, 50, '+', {font: "70px Arial", fill: "#FFFFFF", align: "center"}, probTxtGroup)
+        eqTxt = this.game.add.text(a1_len+a2_len, 50, eq, {font: "70px Arial", fill: "#FFFFFF", align: "center"}, probTxtGroup)
+        sumTxt = this.game.add.text(eqTxt.x + 80, 50, sum, {font: "70px Arial", fill: "#FFFFFF", align: "center"}, probTxtGroup)
+      } else {
+        probTxtGroup = this.game.add.group()
+        ad1Txt = this.game.add.text(30+a1_len/2, 50, this.problem[0], {font: "70px Arial", fill: "#FFFFFF", align: "center"}, probTxtGroup)
+        ad2Txt = this.game.add.text(a1_len+180+a2_len/2, 50, this.problem[1], {font: "70px Arial", fill: "#FFFFFF", align: "center"}, probTxtGroup)
+        plusTxt = this.game.add.text(50+a1_len+55, 50, '+', {font: "70px Arial", fill: "#FFFFFF", align: "center"}, probTxtGroup)
+        eqTxt = this.game.add.text(a1_len+220+a2_len+50, 50, eq, {font: "70px Arial", fill: "#FFFFFF", align: "center"}, probTxtGroup)
+        sumTxt = this.game.add.text(eqTxt.x + 100, 50, sum, {font: "70px Arial", fill: "#FFFFFF", align: "center"}, probTxtGroup)
+      }
+      return probTxtGroup
+    },
+
+    placeCoin: function(sum,y) {
+      count = 0
+      this.hashes.forEachAlive(function(h) {
+        if (count == sum) {
+          x = h.x - 17
+        }
+        count = count + 1
+      }, this)
+      this.coin = this.game.add.sprite(x,y,'coin')
+      this.coin.visible = false
     },
 
     grade: function(time_stamp) {
@@ -193,47 +307,81 @@ Game.Run.prototype = {
 
       if (this.response == this.problem[2] && this.trial == this.op1s.length) {
         this.correct = true
-        this.game.world.remove(this.probText)
-        sumtxt = [this.answerTxt + ' = ' + this.problem[2]]
-        sumtxt = sumtxt.join('')
-        this.sumText = this.game.add.text(480, 200,sumtxt, {font: "70px Arial", fill: "#FFFFFF", align: "center"})
-        this.sumText.anchor.x = 0.5
-        giveFeedback(this, this.correct, 470, 40, '90px Arial')
+        if (this.reps == 0) {
+            this.streak += 1
+        }
+        this.reps = 0
+        this.game.world.remove(this.probTxtGroup)
+        this.sumText = this.probTextMaker('=',this.problem[2])
+        giveFeedback(this, this.correct, this.streak, 'vnt',470, 400, '60px Arial')
         this.points += 1
+        this.game.world.remove(this.coin)
         this.numGraded++
-        this.pointDisplay.setText("Points: " + this.points)
-        this.save()
+        this.pointDisplay.setText("Coins: " + this.points)
+        this.moveAddendLines = true
+        if (this.problem[2] > 19) {
+          this.ad1Txt = this.game.add.text(a1_len/2, 50, this.problem[0], {font: "70px Arial", fill: "#FFFFFF", align: "center"}, probTxtGroup)
+          this.ad2Txt = this.game.add.text(a1_len+10+a2_len/2, 50, this.problem[1], {font: "70px Arial", fill: "#FFFFFF", align: "center"}, probTxtGroup)
+        } else {
+          this.ad1Txt = this.game.add.text(30+a1_len/2, 50, this.problem[0], {font: "70px Arial", fill: "#FFFFFF", align: "center"}, probTxtGroup)
+          this.ad2Txt = this.game.add.text(a1_len+180+a2_len/2, 50, this.problem[1], {font: "70px Arial", fill: "#FFFFFF", align: "center"}, probTxtGroup)
+        }
+        //this.save()
         this.quitGame()
         return
       } else if (this.response == this.problem[2] && this.trial != this.op1s.length) {
         this.correct = true
-        this.game.world.remove(this.probText)
-        sumtxt = [this.answerTxt + ' = ' + this.problem[2]]
-        sumtxt = sumtxt.join('')
-        this.sumText = this.game.add.text(480, 200,sumtxt, {font: "70px Arial", fill: "#FFFFFF", align: "center"})
-        this.sumText.anchor.x = 0.5
+        if (this.reps == 0) {
+            this.streak += 1
+        }
+        this.reps = 0
+        this.game.world.remove(this.probTxtGroup)
+        this.sumText = this.probTextMaker('=',this.problem[2])
       } else {
         this.correct = false
-        this.game.world.remove(this.probText)
-        sumtxt = [this.answerTxt + ' ≠ ' + this.response]
-        sumtxt = sumtxt.join('')
-        this.sumText = this.game.add.text(480, 200,sumtxt, {font: "70px Arial", fill: "#FFFFFF", align: "center"})
-        this.sumText.anchor.x = 0.5
+        this.streak = 0
+        this.reps+=1
+        this.game.world.remove(this.probTxtGroup)
+        if (this.reps != 3) {
+          this.sumText = this.probTextMaker('≠',this.response)
+        } else {
+          this.sumText = this.probTextMaker('=',this.problem[2])
+        }
         that = this
+      }
+
+      if (this.streak == 3 || this.streak == 7 || this.streak == 13) {
+        this.points += 1
       }
 
       if (this.correct) {
         this.points += 1
+        this.moveCoin = true
+        //this.game.world.remove(this.coin)
       } else {
-        this.points -= 1
+        if (this.points == 0) {
+          this.points = 0
+        } else {
+          this.points -= 1
+        }
       }
 
-      this.pointDisplay.setText("Points: " + this.points)
-      giveFeedback(this, this.correct, 470, 40, '90px Arial')
+      this.pointDisplay.setText("Coins: " + this.points)
 
+      if (this.reps != 3) {
+        giveFeedback(this, this.correct, this.streak,'vnt',470, 400, '60px Arial')
+      }
 
+      this.moveAddendLines = true
+      if (this.problem[2] > 19) {
+        this.ad1Txt = this.game.add.text(a1_len/2, 50, this.problem[0], {font: "70px Arial", fill: "#FFFFFF", align: "center"}, probTxtGroup)
+        this.ad2Txt = this.game.add.text(a1_len+10+a2_len/2, 50, this.problem[1], {font: "70px Arial", fill: "#FFFFFF", align: "center"}, probTxtGroup)
+      } else {
+        this.ad1Txt = this.game.add.text(30+a1_len/2, 50, this.problem[0], {font: "70px Arial", fill: "#FFFFFF", align: "center"}, probTxtGroup)
+        this.ad2Txt = this.game.add.text(a1_len+180+a2_len/2, 50, this.problem[1], {font: "70px Arial", fill: "#FFFFFF", align: "center"}, probTxtGroup)
+      }
       this.numGraded++
-      this.save()
+      //this.save()
       this.endTrial()
     },
 
@@ -269,20 +417,45 @@ Game.Run.prototype = {
     },
 
     endTrial: function() {
-      that = this
-      setTimeout(function() {
-        that.game.world.remove(that.sumText)
-        if (that.correct) {
+      if (this.reps == 3) {
+        this.reps = 0
+        this.sorryText = this.game.add.text(200, 400, 'Sorry, the correct answer is ' + this.problem[2], {font: "40px Arial", fill: "#FFFFFF", align: "center"})
+        that = this
+        setTimeout(function() {
+          that.game.world.remove(that.sumText)
+          that.game.world.remove(that.sorryText)
+          that.game.world.remove(that.a1_line)
+          that.game.world.remove(that.a2_line)
+          that.game.world.remove(that.ad1Txt)
+          that.game.world.remove(that.ad2Txt)
+          that.hideLine()
           that.nextTrial()
-        } else {
-          that.probText = that.game.add.text(480, 200, that.answerTxt, {font: "70px Arial", fill: "#FFFFFF", align: "center"})
-          that.probText.anchor.x = 0.5
-          //clock
-          var d = new Date();
-          that.start_time = d.getTime();
-          //reset the RT counter
-        }
-      }, 1000)
+        }, 1500)
+      } else {
+        that = this
+        setTimeout(function() {
+          that.game.world.remove(that.sumText)
+          that.game.world.remove(that.a1_line)
+          that.game.world.remove(that.a2_line)
+          that.game.world.remove(that.ad1Txt)
+          that.game.world.remove(that.ad2Txt)
+          if (that.correct) {
+            that.hideLine()
+            that.nextTrial()
+          } else {
+            that.probTxtGroup = that.probTextMaker('=','?')
+            //clock
+            var d = new Date();
+            that.start_time = d.getTime();
+            that.game.world.remove(that.a1_line)
+            that.game.world.remove(that.a2_line)
+            that.game.world.remove(that.ad1Txt)
+            that.game.world.remove(that.ad2Txt)
+            that.addendLineMaker()
+            //reset the RT counter
+          }
+        }, 2000)
+      }
     },
 
     quitGame: function () {
@@ -302,9 +475,9 @@ Game.Run.prototype = {
 
         //Let them know it's done...
         this.game.time.events.add(Phaser.Timer.SECOND * 1.5, function () {
-          endText = this.game.add.text(480, 100, 'All done!', {'font': '70px Arial', 'fill':'#fff'});
+          endText = this.game.add.text(480, 200, 'All done!', {'font': '70px Arial', 'fill':'#fff'});
           endText.anchor.x = 0.5
-          finalPoints = this.game.add.text(this.game.width/2, 200, 'You got ' + this.points + ' points', {font:'70px Arial', fill:'#FFFFFF', align:'center'});
+          finalPoints = this.game.add.text(this.game.width/2, 75, 'You got ' + this.points + ' points', {font:'70px Arial', fill:'#FFFFFF', align:'center'});
           finalPoints.anchor.x = 0.5
           totalPoints = this.points
           this.points = 0
@@ -321,6 +494,16 @@ Game.Run.prototype = {
       this.mover.drawCircle(0, 250, 20)
     },
 
+    makeDude: function(x,y) {
+      this.dude = this.game.add.sprite(x,y,'dude');
+      //this.game.physics.enable(this.dude);
+      this.dude.anchor.setTo(0.5,1);
+      this.dude.scale.x = -1; //also flipped
+      this.dude.animations.add('right', [0, 1, 2, 3], 10, true);
+      this.dude.animations.add('left', [5, 6, 7, 8], 10, true);
+      this.dudeMade = true
+    },
+
     update: function() {
 
       pointerX = this.clickType.x
@@ -329,19 +512,86 @@ Game.Run.prototype = {
       if (this.mouseDown && pointerX >= this.mover.x - 50  && pointerX <= this.mover.x + 50 && pointerY >= this.mainLineY-20 && pointerY <= this.mainLineY+20) {
         if (pointerX < this.mainLineLength+50 && pointerX > this.mainLineX) {
           this.moverMaker(pointerX, 0x3232ff)
+          if (!this.dudeMade) {
+            this.makeDude(pointerX,this.mainLineY-20)
+            this.dude.frame = 4
+          } else {
+            if (pointerX < this.dude.x) {
+              this.dude.animations.play('left')
+            } else if (pointerX > this.dude.x) {
+              this.dude.animations.play('right')
+            } else if (this.dude.x == pointerX) {
+              this.dude.animations.stop()
+              this.dude.frame = 4
+            }
+            this.dude.x = pointerX
+          }
           this.front.x = this.mover.x-1000
         }
       } else {
-        prevX = this.mover.x
-        this.moverMaker(prevX,0x33cccc)
+        this.prevX = this.mover.x
+        this.moverMaker(this.prevX,0x33cccc)
+        this.dude.x = this.mover.x
       }
 
-      moverPos = this.mover.x
+      that = this
       if (this.submit) {
-        this.mover.x = moverPos - 15
-        this.front.x = this.mover.x-1000
-        if (moverPos <= 74) {
+        setTimeout(function() {
           this.submit = false
+          // that.moverPos = that.mover.x
+          // that.mover.x = that.moverPos - 15
+          // that.front.x = that.mover.x-1000
+          // that.dude.animations.play('left')
+          // if (that.moverPos <= 74) {
+          //   that.submit = false
+          //   that.dude.animations.stop()
+          //   that.dude.frame = 4
+          // }
+        }, 300)
+      }
+
+      if (this.moveCoin) {
+        this.coin.visible = true
+        this.coin.bringToTop()
+        this.coin.y -= 3
+        if (this.coin.y <= 250) {
+          this.game.world.remove(this.coin)
+          this.moveCoin = false
+        }
+      }
+
+      if (this.moveAddendLines) {
+        xParam = 3.75
+        yParam = 5
+        if (this.problem[2] > 19) {
+          this.a1_line.y += yParam
+          this.a2_line.y += yParam
+          this.a2_line.x -= 0.75
+          this.sumText.children[0].y += yParam
+          this.sumText.children[1].y += yParam
+          this.sumText.children[1].x -= 0.75
+        } else {
+          this.a1_line.y += yParam
+          this.a2_line.y += yParam
+          this.a2_line.x -= xParam
+          this.sumText.children[0].y += yParam
+          this.sumText.children[1].y += yParam
+          this.sumText.children[1].x -= xParam
+        }
+        this.game.world.bringToTop(this.a1_line)
+        this.game.world.bringToTop(this.a2_line)
+        this.game.world.bringToTop(this.dude)
+        if (this.a1_line.y >= 200) {
+          this.moveAddendLines = false
+
+          for (i=0;i<20;i++) { //a horrible solution to some phaser nonsense
+            this.a1_line.children[2].forEachAlive(function(l) {
+              l.destroy()
+            })
+            this.a2_line.children[2].forEachAlive(function(l) {
+              l.destroy()
+            })
+          }
         }
       }
 

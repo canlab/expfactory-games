@@ -28,6 +28,8 @@ Game.Preloader.prototype = {
 		this.game.load.image('delete', '/static/games/whats_missing_lightning/images/Delete_button.png');
 		this.game.load.image('go', '/static/games/whats_missing_lightning/images/Go_button.png');
 		this.game.load.image('lightning','/static/games/whats_missing_lightning/images/LightningRound_Button.png')
+		this.game.load.image('next', '/static/games/whats_missing_lightning/images/next_button.png')
+		this.game.load.image('back', '/static/games/whats_missing_lightning/images/back_button.png')
 
 	},
 

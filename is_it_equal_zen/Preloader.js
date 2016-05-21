@@ -19,12 +19,13 @@ Game.Preloader.prototype = {
 
 		this.load.setPreloadSprite(this.preloadBar)
 
-		//	Here we load the rest of the assets our game needs.
 
 		this.game.load.image('equalB','/static/games/is_it_equal_zen/images/Equal_Button.png')
 		this.game.load.image('unequalB','/static/games/is_it_equal_zen/images/Unequal_Button.png')
 		this.game.load.image('zen','/static/games/is_it_equal_zen/images/ZenMode_Button.png')
 		this.game.load.image('go', '/static/games/is_it_equal_zen/images/Go_button.png');
+		this.game.load.image('next', '/static/games/is_it_equal_zen/images/next_button.png')
+		this.game.load.image('back', '/static/games/is_it_equal_zen/images/back_button.png')
 
 	},
 
