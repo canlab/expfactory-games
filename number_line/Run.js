@@ -499,8 +499,8 @@ Game.Run.prototype = {
       //this.game.physics.enable(this.dude);
       this.dude.anchor.setTo(0.5,1);
       this.dude.scale.x = -1; //also flipped
-      this.dude.animations.add('right', [0, 1, 2, 3], 10, true);
-      this.dude.animations.add('left', [5, 6, 7, 8], 10, true);
+      this.dude.animations.add('right', [0, 1, 2, 3], 5, true);
+      this.dude.animations.add('left', [5, 6, 7, 8], 5, true);
       this.dudeMade = true
     },
 
@@ -558,6 +558,10 @@ Game.Run.prototype = {
           this.game.world.remove(this.coin)
           this.moveCoin = false
         }
+      }
+
+      if (!this.mouseDown) {
+        this.dude.frame = 4
       }
 
       if (this.moveAddendLines) {
