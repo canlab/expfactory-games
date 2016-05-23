@@ -354,7 +354,7 @@ Game.Run.prototype = {
       this.feedback.cssFont = '70px Arial'
       this.feedback.visible = true
       if (isNaN(this.user_answer)) {
-        this.numFeedback = this.game.add.text(this.game.width/2, 300, " ", {font:'80px Arial', fill:'#FFFFFF', align:'center'});
+        this.numFeedback = this.game.add.text(this.game.width/2, 300,parseInt(op1) + ' + ' + parseInt(op2) + ' = ' + (parseInt(op1)+parseInt(op2)), {font:'80px Arial', fill:'#FFFFFF', align:'center'});
       } else {
         if (!this.algebra) {
           this.numFeedback = this.game.add.text(this.game.width/2, 300, parseInt(op1) + ' + ' + parseInt(op2) + ' = ' + (parseInt(op1)+parseInt(op2)), {font:'80px Arial', fill:'#FFFFFF', align:'center'});
