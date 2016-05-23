@@ -349,7 +349,7 @@ Game.Run.prototype = {
       trialData.ACC[curr_trial-1] == 1
     } else  {
       inputData('ACC', 0)
-      trialData.ACC[curr_Trial-1] == 0
+      trialData.ACC[curr_trial-1] == 0
     }
 
     this.numGraded++
