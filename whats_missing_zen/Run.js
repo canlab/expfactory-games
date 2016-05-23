@@ -293,7 +293,7 @@ Game.Run.prototype = {
     inputData('n2', this.op2s[this.trial])
     inputData('problem_id', this.problem_ids[this.trial])
     inputData('points', this.points)
-    inputData('solution', this.op1s[this.trial] + this.op2s[this.trial])
+    inputData('solution', this.op2s[this.trial])
     inputData('RT', this.stats.RT/1000)
     if (this.correct) {
       inputData('ACC', 1)
