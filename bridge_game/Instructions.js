@@ -276,7 +276,7 @@ Game.Instructions.prototype = {
         this.nextB.anchor.x = (0.5,0.5)
         this.nextB.scale.setTo(0.5,0.5)
     } else if (num == 10) {
-      this.instruct_text = that.game.add.text(this.game.world.centerX,260,"Go ahead and make a bridge that is the correct length \nand hit the cross button when you're ready.",
+      this.instruct_text = that.game.add.text(this.game.world.centerX,240,"Go ahead and make a bridge that is the correct length \nand hit the cross button when you're ready.",
       {font: "20px Arial", fill: "#FFFFFF", align: "center"})
       this.instruct_text.anchor.x = (0.5,0.5)
       this.inst_finished = true
@@ -547,7 +547,7 @@ Game.Instructions.prototype = {
           }
         }
 
-        if (this.streak == 3 || this.streak == 7 || this.streak == 13) {
+        if (this.streak == 3 || this.streak == 7 || this.streak == 12) {
           this.points += 1
         }
 
@@ -826,7 +826,7 @@ Game.Instructions.prototype = {
 
       //Let them know it's done...
       this.game.time.events.add(Phaser.Timer.SECOND, function () {
-        instructions = this.game.add.text(490, 150, 'Nice job! Make sense? If so you can get started by pressing the "go" button.\nIf not, you can repeat the instructions by clicking the "back" button\nYou will complete 13 problems in the main game.', {font:'20px Arial', fill:'#FFFFFF', align:'center'});
+        instructions = this.game.add.text(490, 150, 'Nice job! Make sense? If so you can get started by pressing the "go" button.\nIf not, you can repeat the instructions by clicking the "back" button\nYou will complete 12 problems in the main game.', {font:'20px Arial', fill:'#FFFFFF', align:'center'});
         instructions.anchor.x = 0.5
         instructions.lineSpacing = -8
         this.back_ground = this.makeBox(this.game.world.centerX-instructions.width/2-15,instructions.y-10,instructions.width+10,instructions.height+140)

@@ -9,7 +9,7 @@ range = function(start, count) {
 
 problemGen = function(problem_set) {
 
-  nProbs = 13
+  nProbs = 12
 
   if (problem_set == "A") {
     op1_full = [4,5,6,6,5,7,7,9,8,8,9,9,14,15,16,16,15,17,12,12,12,13,14,13,17,19,18,18,19,19,15,14,15,16,16,17,2,2,2,3,4,3,5,4,5,6,6,7,2,2,2,3,4,3,4,5,6,6,5,7,5,4,5,6,6,7,7,9,8,8,9,9]
@@ -172,7 +172,7 @@ HorizontalProblem = function (game, x, y) {
   }
 }
 
-function giveFeedback(game, ans, x, y, font) {
+function giveFeedback(game, ans, streak, gametype,x, y, font) {
   d = new Date();
   fTime = d.getTime();
   correct_feedback = ['Way to go!','Awesome!','You Rock!','Correct!','Fantastic!','Nice!']
@@ -180,6 +180,21 @@ function giveFeedback(game, ans, x, y, font) {
   if (!ans) {
     disp = "Try Again!"
     disp_color = '#FFFFFF'
+  } else if (streak == 3) {
+    disp = "3 in a row! Extra coin!"
+    disp_color = '#3CF948'
+  } else if (streak == 7) {
+    disp = "7 in a row! Extra coin!"
+    disp_color = '#00F915'
+  } else if (streak == 13 && gametype == 'vnt') {
+    disp = "Perfect Score! Extra coin!"
+    disp_color = '#00F908'
+  } else if (streak == 15) {
+    disp = "15 in a row! Extra coin!"
+    disp_color = '#00F908'
+  } else if (streak == 26) {
+    disp = "Perfect Score! Extra coin!"
+    disp_color = '#00F908'
   } else {
     disp = correct_feedback[Math.floor(Math.random() * correct_feedback.length) + 0]
     disp_color = '#FFFFFF'

@@ -290,7 +290,7 @@ Game.Instructions.prototype = {
       }
     }
 
-    if (this.streak == 3 || this.streak == 7 || this.streak == 15 || this.streak == 26) {
+    if (this.streak == 3 || this.streak == 7 || this.streak == 15 || this.streak == 24) {
       this.points += 1
     }
 
@@ -352,7 +352,7 @@ Game.Instructions.prototype = {
     } else if (this.streak == 15) {
       corrFeedback = '15 in a row! Extra coin!'
       disp_col = '#3CF948'
-    } else if (this.streak == 26) {
+    } else if (this.streak == 24) {
       corrFeedback = 'Perfect Score! Extra coin!'
       disp_col = '#3CF948'
     } else {
@@ -486,7 +486,7 @@ Game.Instructions.prototype = {
 
       //Let them know it's done...
 			this.game.time.events.add(Phaser.Timer.SECOND, function () {
-        instructions = this.game.add.text(490, 50, 'Nice job! Make sense? If so you can get started by pressing the "go" button.\nIf not, you can repeat the instructions by clicking the "back" button\nYou will complete 26 problems in the main game.', {font:'20px Arial', fill:'#FFFFFF', align:'center'});
+        instructions = this.game.add.text(490, 50, 'Nice job! Make sense? If so you can get started by pressing the "go" button.\nIf not, you can repeat the instructions by clicking the "back" button\nYou will complete 24 problems in the main game.', {font:'20px Arial', fill:'#FFFFFF', align:'center'});
         instructions.anchor.x = 0.5
         instructions.lineSpacing = -8
         this.back_ground = this.makeBox(143,instructions.y-10,instructions.width+20,instructions.height+200)

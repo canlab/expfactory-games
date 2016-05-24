@@ -94,7 +94,7 @@ Game.Run.prototype = {
     this.ballCollisionGroup = this.game.physics.p2.createCollisionGroup()
 
     //first trial
-    this.progress = this.game.add.text(this.game.world.centerX*2-100, 560, '1 out of 13', {font:'30px Arial', fill:'#FFFFFF', align:'center'})
+    this.progress = this.game.add.text(this.game.world.centerX*2-100, 560, '1 out of 12', {font:'30px Arial', fill:'#FFFFFF', align:'center'})
     this.progress.fixedToCamera = true
     this.progress.anchor.x = 0.5
 
@@ -238,7 +238,7 @@ Game.Run.prototype = {
       giveFeedback(this, true, this.streak,'vnt',480, 50, "60px Arial")
     }
 
-    if (this.streak == 3 || this.streak == 7 || this.streak == 13) {
+    if (this.streak == 3 || this.streak == 7 || this.streak == 12) {
       this.points += 1
     }
 
@@ -369,10 +369,10 @@ Game.Run.prototype = {
     //reset the RT counter
     if (this.answer == "correct" || this.trial == 0) {
       if (this.trial == 0) {
-        this.progress.setText(1 + ' out of 13')
+        this.progress.setText(1 + ' out of 12')
         this.pointDisplay.setText("Coins: " + this.points)
       } else {
-        this.progress.setText(this.trial+1 + ' out of 13')
+        this.progress.setText(this.trial+1 + ' out of 12')
         this.pointDisplay.setText("Coins: " + this.points)
       }
       if (this.op1s[this.trial] <= 9) {

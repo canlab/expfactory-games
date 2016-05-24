@@ -647,7 +647,7 @@ Game.Instructions.prototype = {
 
       //Let them know it's done...
       this.game.time.events.add(Phaser.Timer.SECOND, function () {
-        instructions = this.game.add.text(490, 250, 'Nice job! Make sense? If so you can get started by pressing the "go" button.\nIf not, you can repeat the instructions by clicking the "back" button\nYou will complete 13 problems in the main game.', {font:'20px Arial', fill:'#FFFFFF', align:'center'});
+        instructions = this.game.add.text(490, 250, 'Nice job! Make sense? If so you can get started by pressing the "go" button.\nIf not, you can repeat the instructions by clicking the "back" button\nYou will complete 12 problems in the main game.', {font:'20px Arial', fill:'#FFFFFF', align:'center'});
         instructions.anchor.x = 0.5
         instructions.lineSpacing = -8
         this.go = this.add.button(250, 375, 'go', function () {this.state.start('Run', true, false, this.week, this.problem_set);}, this);

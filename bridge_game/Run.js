@@ -74,7 +74,7 @@ Game.Run.prototype = {
     d = new Date()
     this.startTime = d.getTime()
 
-    this.progress = this.game.add.text(860, 560, '1 out of 13', {font:'30px Arial', fill:'#FFFFFF', align:'center'})
+    this.progress = this.game.add.text(860, 560, '1 out of 12', {font:'30px Arial', fill:'#FFFFFF', align:'center'})
     this.progress.fixedToCamera = true
     this.progress.anchor.x = 0.5
 

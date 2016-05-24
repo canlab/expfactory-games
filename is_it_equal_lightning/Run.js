@@ -139,7 +139,7 @@ Game.Run.prototype = {
     this.problem[2] = +op1 + +op2;
 
     this.trial++
-    this.progress = this.game.add.text(860, 560, this.trial + ' out of 26', {font:'30px Arial', fill:'#FFFFFF', align:'center'})
+    this.progress = this.game.add.text(860, 560, this.trial + ' out of 24', {font:'30px Arial', fill:'#FFFFFF', align:'center'})
     this.progress.anchor.x = 0.5
 
     this.pointDisplay = this.game.add.text(85, 560, 'Coins: ' + this.points, {font:'30px Arial', fill:'#FFFFFF', align:'center'})
@@ -209,7 +209,7 @@ Game.Run.prototype = {
         }
       }
 
-      if (this.streak == 3 || this.streak == 7 || this.streak == 15 || this.streak == 26) {
+      if (this.streak == 3 || this.streak == 7 || this.streak == 15 || this.streak == 24) {
         this.points += 1
       }
 
@@ -268,7 +268,7 @@ Game.Run.prototype = {
     } else if (this.streak == 15) {
       corrFeedback = '15 in a row! Extra coin!'
       disp_col = '#3CF948'
-    } else if (this.streak == 26) {
+    } else if (this.streak == 24) {
       corrFeedback = 'Perfect Score! Extra coin!'
       disp_col = '#3CF948'
     } else {
@@ -312,7 +312,7 @@ Game.Run.prototype = {
           that.numFeedback.visible = false
           that.makeProb()
           that.makeButtons()
-          that.progress = that.game.add.text(860, 560, that.trial + ' out of 26', {font:'30px Arial', fill:'#FFFFFF', align:'center'})
+          that.progress = that.game.add.text(860, 560, that.trial + ' out of 24', {font:'30px Arial', fill:'#FFFFFF', align:'center'})
           that.progress.anchor.x = 0.5
 
           that.pointDisplay = that.game.add.text(85, 560, 'Coins: ' + that.points, {font:'30px Arial', fill:'#FFFFFF', align:'center'})
@@ -346,7 +346,7 @@ Game.Run.prototype = {
           that.numFeedback.visible = false
           that.makeProb()
           that.makeButtons()
-          that.progress = that.game.add.text(860, 560, that.trial + ' out of 26', {font:'30px Arial', fill:'#FFFFFF', align:'center'})
+          that.progress = that.game.add.text(860, 560, that.trial + ' out of 24', {font:'30px Arial', fill:'#FFFFFF', align:'center'})
           that.progress.anchor.x = 0.5
 
 

@@ -150,7 +150,7 @@ Game.Run.prototype = {
       this.trial++
     }
 
-    this.progress = this.game.add.text(860, 560, this.trial+1 + ' out of 26', {font:'30px Arial', fill:'#FFFFFF', align:'center'})
+    this.progress = this.game.add.text(860, 560, this.trial+1 + ' out of 24', {font:'30px Arial', fill:'#FFFFFF', align:'center'})
     this.progress.anchor.x = 0.5
 
     this.pointDisplay = this.game.add.text(85, 560, 'Coins: ' + this.points, {font:'30px Arial', fill:'#FFFFFF', align:'center'})
