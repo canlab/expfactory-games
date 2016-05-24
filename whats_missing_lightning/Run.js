@@ -141,6 +141,11 @@ Game.Run.prototype = {
 
     if (typeof(this.correct) != 'undefined') {
       if (this.correct == true || this.reps == 3) {
+        if (this.reps == 3) {
+          this.op1s.push(this.op1s[this.trial])
+          this.op2s.push(this.op2s[this.trial])
+          this.problem_ids.push(this.problem_ids[this.trial])
+        }
         this.trial++
         this.reps = 0
       } else {

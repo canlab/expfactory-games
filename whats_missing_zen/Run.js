@@ -60,8 +60,8 @@ Game.Run.prototype = {
   },
 
   create: function () {
-      problems = problemGen(this.week, this.problem_set)
-      reProblems = problemGen(this.week, this.problem_set) //repeat problem set in SPT
+    problems = problemGen(this.week, this.problem_set)
+    reProblems = problemGen(this.week, this.problem_set) //repeat problem set in SPT
       this.op1s = problems[1].concat(reProblems[1])
       this.op2s = problems[2].concat(reProblems[2])
       this.problem_ids = problems[3].concat(reProblems[3])
@@ -141,6 +141,11 @@ Game.Run.prototype = {
 
     if (typeof(this.correct) != 'undefined') {
       if (this.correct == true || this.reps == 3) {
+        if (this.reps == 3) {
+          this.op1s.push(this.op1s[this.trial])
+          this.op2s.push(this.op2s[this.trial])
+          this.problem_ids.push(this.problem_ids[this.trial])
+        }
         this.trial++
         this.reps = 0
       } else {
@@ -273,7 +278,7 @@ Game.Run.prototype = {
       this.clock.onComplete.add(this.endTrial, this)
     }
 
-    this.save()
+    //this.save()
 
 
     this.stats.children[1].text=this.stats.points;
