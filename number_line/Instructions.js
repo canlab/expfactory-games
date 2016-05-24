@@ -63,7 +63,7 @@ Game.Instructions.prototype = {
       d = new Date()
       this.startTime = d.getTime()
 
-      this.progress = this.game.add.text(860, 560, '1 out of 13', {font:'30px Arial', fill:'#FFFFFF', align:'center'})
+      this.progress = this.game.add.text(860, 560, '1 out of 1', {font:'30px Arial', fill:'#FFFFFF', align:'center'})
       this.progress.fixedToCamera = true
       this.progress.anchor.x = 0.5
 
@@ -351,7 +351,7 @@ Game.Instructions.prototype = {
       this.probTxtGroup = this.probTextMaker('=','?')
 
       this.trial++;
-      this.progress.setText(this.trial + ' out of 13')
+      this.progress.setText(this.trial + ' out of 1')
     },
 
     addendLineMaker: function() {

@@ -73,7 +73,7 @@ Game.Instructions.prototype = {
 
     this.game.world.setBounds(0,0,this.op1s.length*1000,600)
     //this.game.add.tileSprite(0,0,this.op1s.length*1000,600,'background')
-    //this.game.stage.backgroundColor = '#02425B'
+    //this.game.stage.backgroundColor = '#02625B'
 
     d = new Date()
     this.startTime = d.getTime()
@@ -276,7 +276,7 @@ Game.Instructions.prototype = {
         this.nextB.anchor.x = (0.5,0.5)
         this.nextB.scale.setTo(0.5,0.5)
     } else if (num == 10) {
-      this.instruct_text = that.game.add.text(this.game.world.centerX,240,"Go ahead and make a bridge that is the correct length \nand hit the cross button when you're ready.",
+      this.instruct_text = that.game.add.text(this.game.world.centerX,260,"Go ahead and make a bridge that is the correct length \nand hit the cross button when you're ready.",
       {font: "20px Arial", fill: "#FFFFFF", align: "center"})
       this.instruct_text.anchor.x = (0.5,0.5)
       this.inst_finished = true

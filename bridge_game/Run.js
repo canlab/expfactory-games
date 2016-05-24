@@ -324,7 +324,7 @@ Game.Run.prototype = {
     //this.problem[3] = this.s[this.trial]
 
     this.trial++;
-    this.progress.setText(this.trial + ' out of 13')
+    this.progress.setText(this.trial + ' out of 12')
 
   },
 
@@ -412,7 +412,7 @@ Game.Run.prototype = {
           }
         }
 
-        if (this.streak == 3 || this.streak == 7 || this.streak == 13) {
+        if (this.streak == 3 || this.streak == 7 || this.streak == 12) {
           this.points += 1
         }
 
