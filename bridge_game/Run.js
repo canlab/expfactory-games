@@ -48,7 +48,7 @@ Game.Run.prototype = {
   },
 
   create: function () {
-    problems = [[],[4,17],[2,9],[0,1]]//problemGen(this.week, this.problem_set)
+    problems = problemGen(this.week, this.problem_set)
     this.op1s = problems[1]
     this.op2s = problems[2]
     this.problem_ids = problems[3]
@@ -108,7 +108,7 @@ Game.Run.prototype = {
       this.Ucloud.scale.setTo(0.7,0.45);
       this.Ucloud.body.immovable = true;
 
-      coin = this.coins.create(currCloudx+215, this.bridgeY - 35, 'coin')
+      coin = this.coins.create(currCloudx+210, this.bridgeY - 35, 'coin')
     }
 
     //adding our dude
@@ -455,7 +455,7 @@ Game.Run.prototype = {
   grade: function(time_stamp) {
 
     this.numGraded++
-    this.save(this.numGraded)
+    //this.save(this.numGraded)
 
   },
 

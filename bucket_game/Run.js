@@ -49,7 +49,7 @@ Game.Run.prototype = {
   },
 
   create: function () {
-    problems = [[],[4,17],[2,9],[0,1]]//problemGen(this.week, this.problem_set)
+    problems = problemGen(this.week, this.problem_set)
     this.op1s = problems[1]
     this.op2s = problems[2]
     this.problem_ids = problems[3]

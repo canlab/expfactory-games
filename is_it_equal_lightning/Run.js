@@ -39,8 +39,8 @@ Game.Run.prototype = {
   },
 
   create: function() {
-    problems = [[],[4,17],[2,9],[0,1]]//problemGen(this.week, this.problem_set)
-    reProblems = [[],[4,17],[2,9],[0,1]]//problemGen(this.week, this.problem_set) //repeat problem set in SPT
+    problems = problemGen(this.week, this.problem_set)
+    reProblems = problemGen(this.week, this.problem_set) //repeat problem set in SPT
     this.op1s = problems[1].concat(reProblems[1])
     this.op2s = problems[2].concat(reProblems[2])
     this.problem_ids = problems[3].concat(reProblems[3])
