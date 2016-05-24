@@ -14,7 +14,7 @@ Game.Menu.prototype = {
 	},
 
   create: function () {
-		title = this.game.add.text(this.game.world.centerX,75,"What's Missing?"",{font:'80px Arial', fill:'#FFFFFF', align:'center'})
+		title = this.game.add.text(this.game.world.centerX,75,"What's Missing?",{font:'80px Arial', fill:'#FFFFFF', align:'center'})
 		title.anchor.x = 0.5
     button = this.add.button(this.game.world.centerX, 175, 'lightning', function () {this.state.start('Instructions', true, false, this.problem_set);}, this);
     button.scale.setTo(0.5,0.5)
