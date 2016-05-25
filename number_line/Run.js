@@ -329,6 +329,7 @@ Game.Run.prototype = {
           this.ad1Txt = this.game.add.text(30+a1_len/2, 50, this.problem[0], {font: "70px Arial", fill: "#FFFFFF", align: "center"}, probTxtGroup)
           this.ad2Txt = this.game.add.text(a1_len+180+a2_len/2, 50, this.problem[1], {font: "70px Arial", fill: "#FFFFFF", align: "center"}, probTxtGroup)
         }
+        this.save()
         this.quitGame()
         return
       } else if (this.response == this.problem[2] && this.trial != this.op1s.length) {
@@ -383,6 +384,7 @@ Game.Run.prototype = {
         this.ad2Txt = this.game.add.text(a1_len+180+a2_len/2, 50, this.problem[1], {font: "70px Arial", fill: "#FFFFFF", align: "center"}, probTxtGroup)
       }
       this.numGraded++
+      this.save()
       this.endTrial()
     },
 
