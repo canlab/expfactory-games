@@ -63,7 +63,7 @@ Game.Run.prototype = {
       d = new Date()
       this.startTime = d.getTime()
 
-      this.progress = this.game.add.text(860, 560, '1 out of 12', {font:'30px Arial', fill:'#FFFFFF', align:'center'})
+      this.progress = this.game.add.text(860, 560, '1 out of ' + this.op1s.length, {font:'30px Arial', fill:'#FFFFFF', align:'center'})
       this.progress.fixedToCamera = true
       this.progress.anchor.x = 0.5
 
@@ -251,7 +251,7 @@ Game.Run.prototype = {
       this.probTxtGroup = this.probTextMaker('=','?')
 
       this.trial++;
-      this.progress.setText(this.trial + ' out of 12')
+      this.progress.setText(this.trial + ' out of ' + this.op1s.length)
     },
 
     addendLineMaker: function() {
@@ -352,7 +352,7 @@ Game.Run.prototype = {
         that = this
       }
 
-      if (this.streak == 3 || this.streak == 7 || this.streak == 13) {
+      if (this.streak == 3 || this.streak == 7 || this.streak == 12) {
         this.points += 1
       }
 
