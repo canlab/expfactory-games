@@ -31,6 +31,7 @@ Game.Instructions = function (game) {
     this.inst_num = 1
     this.inst_finished = false
     this.moveAddendLines = false
+    that.clickable = true
 
   };
 
@@ -104,9 +105,10 @@ Game.Instructions.prototype = {
 
       submitButton = this.game.add.button(425, 500, 'go')
       submitButton.onInputUp.add(function() {
-        if (this.mover.x > 60 && this.inst_finished) {
+        if (this.mover.x > 60 && this.inst_finished && this.clickable) {
           this.game.world.remove(this.back_ground)
           this.game.world.remove(this.instruct_text)
+          this.clickable = false
           this.submit = true
           var d = new Date()
           this.RT = d.getTime() - this.start_time
@@ -521,7 +523,7 @@ Game.Instructions.prototype = {
     },
 
     endTrial: function() {
-      if (this.reps == 3) {
+      if (this.reps == 3000) {
         this.reps = 0
         this.sorryText = this.game.add.text(200, 400, 'Sorry, the correct answer is ' + this.problem[2], {font: "40px Arial", fill: "#FFFFFF", align: "center"})
         that = this
@@ -534,6 +536,7 @@ Game.Instructions.prototype = {
           that.game.world.remove(that.ad2Txt)
           that.hideLine()
           that.nextTrial()
+          that.clickable = true
         }, 1500)
       } else {
         that = this
@@ -546,6 +549,7 @@ Game.Instructions.prototype = {
           if (that.correct) {
             that.hideLine()
             that.nextTrial()
+            that.clickable = true
           } else {
             that.probTxtGroup = that.probTextMaker('=','?')
             //clock
@@ -556,6 +560,7 @@ Game.Instructions.prototype = {
             that.game.world.remove(that.ad1Txt)
             that.game.world.remove(that.ad2Txt)
             that.addendLineMaker()
+            that.clickable = true
             //reset the RT counter
           }
         }, 2000)

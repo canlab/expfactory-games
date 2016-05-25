@@ -504,7 +504,7 @@ Game.Instructions.prototype = {
         } else {
           this.streak = 0
           this.reps += 1
-          if (this.reps == 3) {
+          if (this.reps == 3000) {
             this.nextTrial()
             if (this.userBridge.length < this.problem[1]) {
               if (this.trial > 0) {

@@ -265,7 +265,7 @@ Game.Instructions.prototype = {
     }
 
     if (typeof(this.correct) != 'undefined') {
-      if (this.correct == true || this.reps == 3) {
+      if (this.correct == true || this.reps == 3000) {
         this.trial++
         this.reps = 0
       } else {
