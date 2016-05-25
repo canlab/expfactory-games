@@ -31,7 +31,7 @@ Game.Instructions = function (game) {
     this.inst_num = 1
     this.inst_finished = false
     this.moveAddendLines = false
-    that.clickable = true
+    this.clickable = true
 
   };
 
