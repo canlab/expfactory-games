@@ -28,6 +28,9 @@ Game.Run = function (game) {
     this.reps = 0
     this.streak = 0
     this.moveAddendLines = false
+    this.submit = false
+    this.movingLines = false
+    this.clickable = true
 
   };
 
@@ -101,13 +104,13 @@ Game.Run.prototype = {
 
       submitButton = this.game.add.button(425, 500, 'go')
       submitButton.onInputUp.add(function() {
-        if (this.mover.x > 60) {
-          this.submit = true
-          var d = new Date()
-          this.RT = d.getTime() - this.start_time
-          this.grade(this.startTime)
-        }
-
+          if (this.mover.x > 60 && this.clickable) {
+            this.submit = true
+            this.clickable = false
+            var d = new Date()
+            this.RT = d.getTime() - this.start_time
+            this.grade(this.startTime)
+          }
       }, this)
 
       this.game.input.onDown.add(this.mouseDragStart, this)
@@ -326,7 +329,6 @@ Game.Run.prototype = {
           this.ad1Txt = this.game.add.text(30+a1_len/2, 50, this.problem[0], {font: "70px Arial", fill: "#FFFFFF", align: "center"}, probTxtGroup)
           this.ad2Txt = this.game.add.text(a1_len+180+a2_len/2, 50, this.problem[1], {font: "70px Arial", fill: "#FFFFFF", align: "center"}, probTxtGroup)
         }
-        this.save()
         this.quitGame()
         return
       } else if (this.response == this.problem[2] && this.trial != this.op1s.length) {
@@ -381,7 +383,6 @@ Game.Run.prototype = {
         this.ad2Txt = this.game.add.text(a1_len+180+a2_len/2, 50, this.problem[1], {font: "70px Arial", fill: "#FFFFFF", align: "center"}, probTxtGroup)
       }
       this.numGraded++
-      this.save()
       this.endTrial()
     },
 
@@ -430,6 +431,7 @@ Game.Run.prototype = {
           that.game.world.remove(that.ad2Txt)
           that.hideLine()
           that.nextTrial()
+          that.clickable = true
         }, 1500)
       } else {
         that = this
@@ -442,6 +444,7 @@ Game.Run.prototype = {
           if (that.correct) {
             that.hideLine()
             that.nextTrial()
+            that.clickable = true
           } else {
             that.probTxtGroup = that.probTextMaker('=','?')
             //clock
@@ -452,6 +455,7 @@ Game.Run.prototype = {
             that.game.world.remove(that.ad1Txt)
             that.game.world.remove(that.ad2Txt)
             that.addendLineMaker()
+            that.clickable = true
             //reset the RT counter
           }
         }, 2000)
@@ -565,6 +569,7 @@ Game.Run.prototype = {
       }
 
       if (this.moveAddendLines) {
+        this.movingLines = true
         xParam = 3.75
         yParam = 5
         if (this.problem[2] > 19) {
@@ -587,6 +592,7 @@ Game.Run.prototype = {
         this.game.world.bringToTop(this.dude)
         if (this.a1_line.y >= 200) {
           this.moveAddendLines = false
+          this.movingLines = false
 
           for (i=0;i<20;i++) { //a horrible solution to some phaser nonsense
             this.a1_line.children[2].forEachAlive(function(l) {
