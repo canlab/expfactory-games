@@ -157,6 +157,13 @@ Game.Instructions.prototype = {
           this.instruct_text = this.game.add.text(this.game.world.centerX-40,80,"You can give your answer for this problem now.",
           {font: "20px Arial", fill: "#FFFFFF", align: "center"})
           this.inst_finished = true
+          this.back_ground = this.makeBox(instruct_text.x-20,instruct_text.y-10,595,120)
+          instX = this.back_ground.x
+          instY = this.back_ground.y
+          this.game.world.sendToBack(this.back_ground)
+          this.nextB.anchor.x = (0.5,0.5)
+          this.nextB.scale.setTo(0.5,0.5)
+
     }
 	},
 
