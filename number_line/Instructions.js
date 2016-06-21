@@ -167,7 +167,7 @@ Game.Instructions.prototype = {
         this.nextB.anchor.x = (0.5,0.5)
         this.nextB.scale.setTo(0.5,0.5)
       } if (num == 3) {
-        instruct_text = this.game.add.text(670,180,"When you think you know the answer, drag the blue ball\n to that number's location. Your character will follow! \nTry it!",
+        instruct_text = this.game.add.text(670,180,"When you think you know the answer, drag the blue ball\n to that number's location.\nYour character will follow!",
         {font: "20px Arial", fill: "#FFFFFF", align: "center"})
         instruct_text.anchor.x = (0.5,0.5)
         this.nextB = this.add.button(670,280, 'next', function () {
@@ -177,51 +177,7 @@ Game.Instructions.prototype = {
         this.inst_finished = false
         this.nextB.anchor.x = (0.5,0.5)
         this.nextB.scale.setTo(0.5,0.5)
-      } if (num == 4) {
-        instruct_text = this.game.add.text(670,180,"Use the 'go' button to submit your answer once\n you have found the location of the number.",
-        {font: "20px Arial", fill: "#FFFFFF", align: "center"})
-        instruct_text.anchor.x = (0.5,0.5)
-        this.nextB = this.add.button(670,280, 'next', function () {
-          this.game.world.remove(instruct_text)
-          this.rmInstructB = true
-        }, this);
-        this.inst_finished = false
-        this.nextB.anchor.x = (0.5,0.5)
-        this.nextB.scale.setTo(0.5,0.5)
-      } if (num == 5) {
-        instruct_text = this.game.add.text(670,180,"You will lose a coin for each incorrect answer,\n so be careful!",
-        {font: "20px Arial", fill: "#FFFFFF", align: "center"})
-        instruct_text.anchor.x = (0.5,0.5)
-        this.nextB = this.add.button(670,280, 'next', function () {
-          this.game.world.remove(instruct_text)
-          this.rmInstructB = true
-        }, this);
-        this.inst_finished = false
-        this.nextB.anchor.x = (0.5,0.5)
-        this.nextB.scale.setTo(0.5,0.5)
-      }if (num == 6) {
-        instruct_text = this.game.add.text(670,180,"And you have 3 tries to answer each problem \nbefore moving on to the next one.",
-        {font: "20px Arial", fill: "#FFFFFF", align: "center"})
-        instruct_text.anchor.x = (0.5,0.5)
-        this.nextB = this.add.button(670,280, 'next', function () {
-          this.game.world.remove(instruct_text)
-          this.rmInstructB = true
-        }, this);
-        this.inst_finished = false
-        this.nextB.anchor.x = (0.5,0.5)
-        this.nextB.scale.setTo(0.5,0.5)
-      }if (num == 7) {
-        instruct_text = this.game.add.text(670,180,"Lastly, streaks of correct answers \nget you an extra coin!",
-        {font: "20px Arial", fill: "#FFFFFF", align: "center"})
-        instruct_text.anchor.x = (0.5,0.5)
-        this.nextB = this.add.button(670,280, 'next', function () {
-          this.game.world.remove(instruct_text)
-          this.rmInstructB = true
-        }, this);
-        this.inst_finished = false
-        this.nextB.anchor.x = (0.5,0.5)
-        this.nextB.scale.setTo(0.5,0.5)
-      }if (num == 8) {
+      }if (num == 4) {
         this.instruct_text = this.game.add.text(670,220,"You can try answering this problem now.",
         {font: "20px Arial", fill: "#FFFFFF", align: "center"})
         this.instruct_text.anchor.x = (0.5,0.5)

@@ -475,47 +475,7 @@ Game.Instructions.prototype = {
        this.rmInstructB = true
      }, this);
      this.nextB.scale.setTo(0.5,0.5)
-   } else if (num == 5) {
-    instruct_text = that.game.add.text(this.game.world.centerX,100,
-      "You have three chances to get each problem right.",
-      {font: "20px Arial", fill: "#FFFFFF", align: "center"})
-      instruct_text.anchor.x = (0.5,0.5)
-    this.nextB = this.add.button(450, 170, 'next', function () {
-      this.game.world.remove(instruct_text)
-      this.rmInstructB = true
-    }, this);
-    this.nextB.scale.setTo(0.5,0.5)
-   } else if (num == 6) {
-     instruct_text = that.game.add.text(this.game.world.centerX,100,
-       "You will get a coin for each correct answer. Try and get as many as possible!",
-       {font: "20px Arial", fill: "#FFFFFF", align: "center"})
-       instruct_text.anchor.x = (0.5,0.5)
-     this.nextB = this.add.button(450, 170, 'next', function () {
-       this.game.world.remove(instruct_text)
-       this.rmInstructB = true
-     }, this);
-     this.nextB.scale.setTo(0.5,0.5)
-   } else if (num == 7) {
-     instruct_text = that.game.add.text(this.game.world.centerX,100,
-       "Streaks of correct answers can get you even more coins!",
-       {font: "20px Arial", fill: "#FFFFFF", align: "center"})
-       instruct_text.anchor.x = (0.5,0.5)
-     this.nextB = this.add.button(450, 170, 'next', function () {
-       this.game.world.remove(instruct_text)
-       this.rmInstructB = true
-     }, this);
-     this.nextB.scale.setTo(0.5,0.5)
-   }  else if (num == 8) {
-       instruct_text = that.game.add.text(this.game.world.centerX,100,
-         "But be careful, because if you get a question wrong you will lose one of your coins!",
-         {font: "20px Arial", fill: "#FFFFFF", align: "center"})
-         instruct_text.anchor.x = (0.5,0.5)
-       this.nextB = this.add.button(450, 170, 'next', function () {
-         this.game.world.remove(instruct_text)
-         this.rmInstructB = true
-       }, this);
-       this.nextB.scale.setTo(0.5,0.5)
-   }  else if (num == 9) {
+   }  else if (num == 5) {
      this.instruct_text = that.game.add.text(this.game.world.centerX,100,
        "Go ahead and give your answer to this problem.",
        {font: "20px Arial", fill: "#FFFFFF", align: "center"})

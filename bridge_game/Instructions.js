@@ -221,7 +221,7 @@ Game.Instructions.prototype = {
       this.nextB.scale.setTo(0.5,0.5)
     } else if (num == 5) {
       this.occluder.visible = false
-      instruct_text = that.game.add.text(this.game.world.centerX,250,"If your bridge is too long the sides will collide and you'll have to try again.\n Make a too long bridge and hit the cross button now. Then hit next.",
+      instruct_text = that.game.add.text(this.game.world.centerX,250,"If your bridge is too long the sides will collide and you'll have to try again.\nIf your bridge is too short your character will fall through the gap!",
       {font: "20px Arial", fill: "#FFFFFF", align: "center"})
       instruct_text.anchor.x = (0.5,0.5)
       this.nextB = this.add.button(this.game.world.centerX, 320, 'next', function () {
@@ -232,50 +232,6 @@ Game.Instructions.prototype = {
       this.nextB.anchor.x = (0.5,0.5)
       this.nextB.scale.setTo(0.5,0.5)
     } else if (num == 6) {
-      instruct_text = that.game.add.text(this.game.world.centerX,250,"And if your bridge is too short your character will fall through the gap! \n Hit the cross button with a too short bridge now. Then hit next.",
-      {font: "20px Arial", fill: "#FFFFFF", align: "center"})
-      instruct_text.anchor.x = (0.5,0.5)
-      this.nextB = this.add.button(this.game.world.centerX, 320, 'next', function () {
-        this.game.world.remove(instruct_text)
-        this.rmInstructB = true
-      }, this);
-      this.inst_finished = true
-      this.nextB.anchor.x = (0.5,0.5)
-      this.nextB.scale.setTo(0.5,0.5)
-    } else if (num == 7) {
-      instruct_text = that.game.add.text(this.game.world.centerX,275,"You lose a coin for each wrong answer, so be careful!",
-      {font: "20px Arial", fill: "#FFFFFF", align: "center"})
-      instruct_text.anchor.x = (0.5,0.5)
-      this.nextB = this.add.button(this.game.world.centerX, 320, 'next', function () {
-        this.game.world.remove(instruct_text)
-        this.rmInstructB = true
-      }, this);
-      this.inst_finished = true
-      this.nextB.anchor.x = (0.5,0.5)
-      this.nextB.scale.setTo(0.5,0.5)
-    } else if (num == 8) {
-      instruct_text = that.game.add.text(this.game.world.centerX,275,"You have three tries to bridge each gap before moving on to a new one.",
-      {font: "20px Arial", fill: "#FFFFFF", align: "center"})
-      instruct_text.anchor.x = (0.5,0.5)
-      this.nextB = this.add.button(this.game.world.centerX, 320, 'next', function () {
-        this.game.world.remove(instruct_text)
-        this.rmInstructB = true
-      }, this);
-      this.inst_finished = false
-      this.nextB.anchor.x = (0.5,0.5)
-      this.nextB.scale.setTo(0.5,0.5)
-    } else if (num == 9) {
-        instruct_text = that.game.add.text(this.game.world.centerX,250,"Streaks of correct answers will get you an extra coin.\n Get as many coins as possible!",
-        {font: "20px Arial", fill: "#FFFFFF", align: "center"})
-        instruct_text.anchor.x = (0.5,0.5)
-        this.nextB = this.add.button(this.game.world.centerX, 320, 'next', function () {
-          this.game.world.remove(instruct_text)
-          this.rmInstructB = true
-        }, this);
-        this.inst_finished = false
-        this.nextB.anchor.x = (0.5,0.5)
-        this.nextB.scale.setTo(0.5,0.5)
-    } else if (num == 10) {
       this.instruct_text = that.game.add.text(this.game.world.centerX,260,"Go ahead and make a bridge that is the correct length \nand hit the cross button when you're ready.",
       {font: "20px Arial", fill: "#FFFFFF", align: "center"})
       this.instruct_text.anchor.x = (0.5,0.5)
