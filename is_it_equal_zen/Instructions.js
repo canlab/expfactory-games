@@ -128,36 +128,6 @@ Game.Instructions.prototype = {
           this.nextB.anchor.x = (0.5,0.5)
           this.nextB.scale.setTo(0.5,0.5)
     } if (num == 3) {
-          instruct_text = this.game.add.text(this.game.world.centerX-10,50,"You will get a coin for each correct answer.\nTry to get as many as possible!",
-          {font: "20px Arial", fill: "#FFFFFF", align: "center"})
-          this.nextB = this.add.button(this.game.world.centerX+175, 120, 'next', function () {
-            this.game.world.remove(instruct_text)
-            this.rmInstructB = true
-          }, this);
-          this.inst_finished = false
-          this.nextB.anchor.x = (0.5,0.5)
-          this.nextB.scale.setTo(0.5,0.5)
-    } if (num == 4) {
-          instruct_text = this.game.add.text(this.game.world.centerX+20,50,"But be careful, because you will lose\n a coin for every wrong answer.",
-          {font: "20px Arial", fill: "#FFFFFF", align: "center"})
-          this.nextB = this.add.button(this.game.world.centerX+175, 120, 'next', function () {
-            this.game.world.remove(instruct_text)
-            this.rmInstructB = true
-          }, this);
-          this.inst_finished = false
-          this.nextB.anchor.x = (0.5,0.5)
-          this.nextB.scale.setTo(0.5,0.5)
-    } if (num == 5) {
-          instruct_text = this.game.add.text(this.game.world.centerX-50,50,"Streaks of correct answers will get you an extra coin!",
-          {font: "20px Arial", fill: "#FFFFFF", align: "center"})
-          this.nextB = this.add.button(this.game.world.centerX+175, 120, 'next', function () {
-            this.game.world.remove(instruct_text)
-            this.rmInstructB = true
-          }, this);
-          this.inst_finished = false
-          this.nextB.anchor.x = (0.5,0.5)
-          this.nextB.scale.setTo(0.5,0.5)
-    } if (num == 6) {
           this.instruct_text = this.game.add.text(this.game.world.centerX-40,70,"You can give your answer for this problem now.",
           {font: "20px Arial", fill: "#FFFFFF", align: "center"})
           this.inst_finished = true

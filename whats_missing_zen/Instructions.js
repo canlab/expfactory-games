@@ -166,46 +166,6 @@ Game.Instructions.prototype = {
               this.nextB.anchor.x = (0.5,0.5)
               this.nextB.scale.setTo(0.5,0.5)
         } if (num == 3) {
-              instruct_text = this.game.add.text(this.game.world.centerX+50,460,"Hit the 'go' button to submit\n your answer.",
-              {font: "20px Arial", fill: "#FFFFFF", align: "center"})
-              this.nextB = this.add.button(this.game.world.centerX+175, 530, 'next', function () {
-                this.game.world.remove(instruct_text)
-                this.rmInstructB = true
-              }, this);
-              this.inst_finished = false
-              this.nextB.anchor.x = (0.5,0.5)
-              this.nextB.scale.setTo(0.5,0.5)
-        } if (num == 4) {
-              instruct_text = this.game.add.text(this.game.world.centerX-20,460,"You will get a coin for each correct answer. \nTry to get as many as possible!",
-              {font: "20px Arial", fill: "#FFFFFF", align: "center"})
-              this.nextB = this.add.button(this.game.world.centerX+175, 530, 'next', function () {
-                this.game.world.remove(instruct_text)
-                this.rmInstructB = true
-              }, this);
-              this.inst_finished = false
-              this.nextB.anchor.x = (0.5,0.5)
-              this.nextB.scale.setTo(0.5,0.5)
-        } if (num == 5) {
-              instruct_text = this.game.add.text(this.game.world.centerX+10,460,"But be careful, because you will lose\n a coin for any wrong answers.",
-              {font: "20px Arial", fill: "#FFFFFF", align: "center"})
-              this.nextB = this.add.button(this.game.world.centerX+175, 530, 'next', function () {
-                this.game.world.remove(instruct_text)
-                this.rmInstructB = true
-              }, this);
-              this.inst_finished = false
-              this.nextB.anchor.x = (0.5,0.5)
-              this.nextB.scale.setTo(0.5,0.5)
-        } if (num == 6) {
-              instruct_text = this.game.add.text(this.game.world.centerX+30,460,"Streaks of correct answers will \nget you an extra coin!",
-              {font: "20px Arial", fill: "#FFFFFF", align: "center"})
-              this.nextB = this.add.button(this.game.world.centerX+175, 530, 'next', function () {
-                this.game.world.remove(instruct_text)
-                this.rmInstructB = true
-              }, this);
-              this.inst_finished = false
-              this.nextB.anchor.x = (0.5,0.5)
-              this.nextB.scale.setTo(0.5,0.5)
-        } if (num == 7) {
               this.instruct_text = this.game.add.text(this.game.world.centerX+10,500,"Go ahead and try this problem now.",
               {font: "20px Arial", fill: "#FFFFFF", align: "center"})
               this.inst_finished = true
