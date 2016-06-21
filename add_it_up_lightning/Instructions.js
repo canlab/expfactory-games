@@ -205,46 +205,6 @@ Game.Instructions.prototype = {
           this.nextB.anchor.x = (0.5,0.5)
           this.nextB.scale.setTo(0.5,0.5)
     } if (num == 6) {
-          instruct_text = this.game.add.text(this.game.world.centerX-20,470,"Hit the 'go' button to submit your answer.",
-          {font: "20px Arial", fill: "#FFFFFF", align: "center"})
-          this.nextB = this.add.button(this.game.world.centerX+175, 530, 'next', function () {
-            this.game.world.remove(instruct_text)
-            this.rmInstructB = true
-          }, this);
-          this.inst_finished = false
-          this.nextB.anchor.x = (0.5,0.5)
-          this.nextB.scale.setTo(0.5,0.5)
-    } if (num == 7) {
-          instruct_text = this.game.add.text(this.game.world.centerX-30,470,"You will get a coin for each correct answer.\n Try to get as many as possible!",
-          {font: "20px Arial", fill: "#FFFFFF", align: "center"})
-          this.nextB = this.add.button(this.game.world.centerX+175, 530, 'next', function () {
-            this.game.world.remove(instruct_text)
-            this.rmInstructB = true
-          }, this);
-          this.inst_finished = false
-          this.nextB.anchor.x = (0.5,0.5)
-          this.nextB.scale.setTo(0.5,0.5)
-    } if (num == 8) {
-          instruct_text = this.game.add.text(this.game.world.centerX,470,"But be careful, because you will lose\n a coin for any wrong answers.",
-          {font: "20px Arial", fill: "#FFFFFF", align: "center"})
-          this.nextB = this.add.button(this.game.world.centerX+175, 530, 'next', function () {
-            this.game.world.remove(instruct_text)
-            this.rmInstructB = true
-          }, this);
-          this.inst_finished = false
-          this.nextB.anchor.x = (0.5,0.5)
-          this.nextB.scale.setTo(0.5,0.5)
-    } if (num == 9) {
-          instruct_text = this.game.add.text(this.game.world.centerX+50,470,"Streaks of correct answers\n will get you an extra coin!",
-          {font: "20px Arial", fill: "#FFFFFF", align: "center"})
-          this.nextB = this.add.button(this.game.world.centerX+175, 530, 'next', function () {
-            this.game.world.remove(instruct_text)
-            this.rmInstructB = true
-          }, this);
-          this.inst_finished = false
-          this.nextB.anchor.x = (0.5,0.5)
-          this.nextB.scale.setTo(0.5,0.5)
-    } if (num == 10) {
           this.instruct_text = this.game.add.text(this.game.world.centerX,490,"Go ahead and try this problem now.",
           {font: "20px Arial", fill: "#FFFFFF", align: "center"})
           this.inst_finished = true
