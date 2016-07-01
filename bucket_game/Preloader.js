@@ -20,21 +20,26 @@ Game.Preloader.prototype = {
 		this.load.setPreloadSprite(this.preloadBar)
 
 		//	Here we load the rest of the assets our game needs.
-		this.game.load.spritesheet('balls', '/static/games/bucket_game/images/balls.png', 17, 17)
-    this.game.load.spritesheet('board', '/static/games/bucket_game/images/board.png')
+		// this.game.load.image('go', '/static/games/bucket_game/images/Go_button.png')
+		// this.game.load.image('equalB','/static/games/bucket_game/images/Equal_Button.png')
+		// this.game.load.image('unequalB','/static/games/bucket_game/images/Unequal_Button.png')
+		// this.game.load.image('jar', '/static/games/bucket_game/images/jar.png')
+		// this.game.load.image('jarSmall', '/static/games/bucket_game/images/jar2.png')
+		// this.game.load.image('dispenser','/static/games/bucket_game/images/BallDispenser.png')
+		// this.game.load.physics('jarData','/static/games/bucket_game/images/jar.json')
+		// this.game.load.physics('smalljarData', '/static/games/bucket_game/images/jar2.json')
+		// this.game.load.image('balancingact', '/static/games/bucket_game/images/BalancingAct_Button.png')
+		// this.game.load.image('coin', '/static/games/bucket_game/images/coin_gold.png')
+		// this.game.load.image('next', '/static/games/bucket_game/images/next_button.png')
+		// this.game.load.image('back', '/static/games/bucket_game/images/back_button.png')
+
 		this.game.load.image('go', '/static/games/bucket_game/images/Go_button.png')
 		this.game.load.image('equalB','/static/games/bucket_game/images/Equal_Button.png')
 		this.game.load.image('unequalB','/static/games/bucket_game/images/Unequal_Button.png')
-		this.game.load.image('jar', '/static/games/bucket_game/images/jar.png')
-		this.game.load.image('jarSmall', '/static/games/bucket_game/images/jar2.png')
-		this.game.load.image('dispenser','/static/games/bucket_game/images/BallDispenser.png')
-		this.game.load.physics('jarData','/static/games/bucket_game/images/jar.json')
-		this.game.load.physics('smalljarData', '/static/games/bucket_game/images/jar2.json')
 		this.game.load.image('balancingact', '/static/games/bucket_game/images/BalancingAct_Button.png')
 		this.game.load.image('coin', '/static/games/bucket_game/images/coin_gold.png')
 		this.game.load.image('next', '/static/games/bucket_game/images/next_button.png')
 		this.game.load.image('back', '/static/games/bucket_game/images/back_button.png')
-
 
 
 	},
