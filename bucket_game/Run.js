@@ -27,6 +27,7 @@ Game.Run = function (game) {
     this.streak = 0
     this.reps = 0
     this.usedLocs = []
+    this.threeTries = false
 
 };
 
@@ -76,7 +77,7 @@ Game.Run.prototype = {
     d = new Date()
     this.start_time = d.getTime()
 
-    this.equal = this.game.add.button(580, 540, 'equalB')
+    this.equal = this.game.add.button(540, 540, 'equalB')
     this.equal.scale.x = 0.3
     this.equal.scale.y = 0.3
     this.equal.onInputDown.add(function() {
@@ -87,7 +88,7 @@ Game.Run.prototype = {
       this.grade(this.start_time)
     }, this)
 
-    this.unequal = this.game.add.button(275, 540, 'unequalB')
+    this.unequal = this.game.add.button(315, 540, 'unequalB')
     this.unequal.scale.x = .3
     this.unequal.scale.y = .3
     this.unequal.onInputDown.add(function() {
@@ -117,7 +118,7 @@ Game.Run.prototype = {
     this.problem[2] = +op1 + +op2;
 
     this.trial++
-    this.progress = this.game.add.text(860, 560, this.trial + ' out of 24', {font:'30px Arial', fill:'#FFFFFF', align:'center'})
+    this.progress = this.game.add.text(860, 560, this.trial + ' out of ' + this.op1s.length, {font:'30px Arial', fill:'#FFFFFF', align:'center'})
     this.progress.anchor.x = 0.5
 
     this.pointDisplay = this.game.add.text(85, 560, 'Coins: ' + this.points, {font:'30px Arial', fill:'#FFFFFF', align:'center'})
@@ -129,32 +130,37 @@ Game.Run.prototype = {
   },
 
   makeProb: function() {
-    if (this.equivalence[this.trial-1] == 1) {
-      equal = true
+    trialNum = this.trial-1
+    if (this.equivalence[trialNum] == 1) {
+      this.equalVal = true
     } else {
-      equal = false
+      this.equalVal = false
     }
 
-    if (this.buttonPressed == 'none' || this.answer == 'correct') {
-      this.presentedNum = unequalGen(equal, this.problem[2], this.problem[0], this.problem[1])
-    } else if (this.answer == 'incorrect') {
-      this.presentedNum = this.presentedNum
-    }
+    // if (this.buttonPressed == 'none' || this.answer == 'correct' || this.reps == 1) {
+    //   this.presentedNum = unequalGen(equal, this.problem[2], this.problem[0], this.problem[1])
+    // } else if (this.answer == 'incorrect') {
+    //   this.presentedNum = this.presentedNum
+    // }
+    this.presentedNum = unequalGen(this.equalVal, this.problem[2], this.problem[0], this.problem[1])
 
     this.probText = this.game.add.group()
     this.game.add.text(370,this.game.height/2-75,'+',{font:'80px Arial', fill:'#FFFFFF', align:'center'}, this.probText)
     this.game.add.text(760,this.game.height/2-75,'=',{font:'80px Arial', fill:'#FFFFFF', align:'center'}, this.probText)
     this.game.add.text(840,this.game.height/2-75,this.presentedNum,{font:'80px Arial', fill:'#FFFFFF', align:'center'}, this.probText)
 
-    this.circleGen(this.problem[0],1)
-    this.circleGen(this.problem[1],2)
+    this.circle_group = this.game.add.group()
 
-    // this.answerText = [this.problem[0],' + ',this.problem[1], ' = ',this.presentedNum]
-    // this.answerText = this.answerText.join('')
+    this.op1_circs = this.circleGen(this.problem[0],1)
+    this.op2_circs = this.circleGen(this.problem[1],2)
+
+
+    this.answerText = [this.problem[0],' + ',this.problem[1], ' = ',this.presentedNum]
+    this.answerText = this.answerText.join('')
     // this.probText = this.game.add.text(this.game.width/2, this.game.height/2-100, this.answerText, {font:'80px Arial', fill:'#FFFFFF', align:'center'})
     // this.probText.anchor.x = 0.5
     //
-    if (equal) {
+    if (this.equalVal) {
       numFeedbackText = this.answerText
     } else {
       numFeedbackText = [this.problem[0],' + ',this.problem[1], ' ≠ ',this.presentedNum]
@@ -163,68 +169,105 @@ Game.Run.prototype = {
     this.numFeedback = this.game.add.text(this.game.width/2, this.game.height/2-100, numFeedbackText, {font:'80px Arial', fill:'#FFFFFF', align:'center'})
     this.numFeedback.anchor.x = 0.5
     this.numFeedback.visible = false
+
   },
 
   circleGen: function(numCircs,op) {
     // numCircs = 15
+    // if ((this.reps == 0 && typeof(this.answer) == 'undefined') || (this.reps == 1 && this.answer == 'incorrect') || this.answer == 'correct') {
+      this.circVals = []
 
-    if (op == 1) {
-      this.graphics = this.game.add.graphics(50,20)
-      color = 0x0000ff
-    } else {
-      this.graphics = this.game.add.graphics(440,20)
-      color = 0xffff00
-    }
-
-    y = 50
-    coords = []
-    for (j = 0; j < 5; j++) {
-      x = 50
-      for (i = 0; i < 3; i++) {
-        x = x + 50 + 50
-        coords.push([x,y])
-      }
-      y = y + 50 + 50
-    }
-
-    this.usedLocs = []
-    for (i = 0; i < numCircs; i++) {
-      r = this.getRandom(20,100)
-      if (i <= 9) {
-        loc = Math.floor(this.getRandom(3,11))
+      if (op == 1) {
+        graphics = this.game.add.graphics(50,20)
+        color = 0xff6262
       } else {
-        loc = Math.floor(this.getRandom(0,coords.length))
+        graphics = this.game.add.graphics(440,20)
+        color = 0x65c5f0
       }
-      for (c = 0; c < 1000; c++) {
-        if (this.usedLocs.indexOf(loc) >= 0) {
-          loc = Math.floor(this.getRandom(0,coords.length))
+
+      y = 50
+      coords = []
+      for (j = 0; j < 5; j++) {
+        x = 50
+        for (i = 0; i < 3; i++) {
+          x = x + 50 + 50
+          coords.push([x,y])
         }
+        y = y + 50 + 50
       }
-      if (r <= 50) {
-        offsetAmount = r
-      } else if (r <= 70) {
-        offsetAmount = r + 30
-      } else {
-        offsetAmount = 0
-      }
-      offsetRange = 100 - offsetAmount
-      xOffset = this.getRandom(r,offsetRange)
-      yOffset = this.getRandom(r,offsetRange)
-      offsetDirection = this.getRandom(1,2)
-      if (offsetDirection == 1) {
-        xOffset = -xOffset
-      } else {
-        yOffset = -yOffset
-      }
-      yOffset = 0
-      xOffset = 0
-      this.graphics.lineStyle(0)
-      this.graphics.beginFill(color, 1)
-      this.graphics.drawCircle(coords[loc][0]-100+xOffset,coords[loc][1]+yOffset,r)
-      this.graphics.endFill()
 
-      this.usedLocs.push(loc)
-    }
+      this.usedLocs = []
+      for (i = 0; i < numCircs; i++) {
+        rProb = this.getRandom(0,1)
+        if (rProb <= 0.6) {
+          r = this.getRandom(10,30)
+        } else if (rProb <= 0.85) {
+          r = this.getRandom(31,40)
+        } else {
+          r = this.getRandom(61,90)
+        }
+        loc = Math.floor(this.getRandom(0,coords.length))
+        for (c = 0; c < 1000; c++) {
+          if (this.usedLocs.indexOf(loc) >= 0) {
+            loc = Math.floor(this.getRandom(0,coords.length))
+          }
+        }
+        if (r <= 20) {
+          yOffset = this.getRandom(0,35)
+          xOffset = this.getRandom(0,35)
+        } if (r <= 30) {
+          yOffset = this.getRandom(0,25)
+          xOffset = this.getRandom(0,25)
+        } else if (r <= 60) {
+          yOffset = this.getRandom(0,15)
+          xOffset = this.getRandom(0,15)
+        } else if (r <= 80) {
+          yOffset = this.getRandom(3,8)
+          xOffset = this.getRandom(3,8)
+        } else if (r <= 90) {
+          yOffset = this.getRandom(1,4)
+          xOffset = this.getRandom(1,4)
+        } else {
+          offsetAmount = 0
+          yOffset = 0
+          xOffset = 0
+        }
+        offsetDirection = this.getRandom(0,1)
+        if (offsetDirection >= 0.5) {
+          xOffset = -xOffset
+        } else {
+          yOffset = -yOffset
+        }
+
+        graphics.lineStyle(0)
+        graphics.beginFill(color, 1)
+        graphics.drawCircle(coords[loc][0]-100+xOffset,coords[loc][1]+yOffset,r)
+        graphics.endFill()
+
+        this.circle_group.add(graphics)
+
+        this.usedLocs.push(loc)
+
+        this.circVals.push([coords[loc][0]-100+xOffset,coords[loc][1]+yOffset,r])
+        }
+    // } else {
+    //   if (op == 1) {
+    //     this.graphics = this.game.add.graphics(50,20)
+    //     this.circVals = this.op1_circs
+    //     color = 0xff6262
+    //   } else {
+    //     this.graphics = this.game.add.graphics(440,20)
+    //     this.circVals = this.op2_circs
+    //     color = 0x65c5f0
+    //   }
+    //   for (i=0; i < numCircs; i++) {
+    //     this.graphics.lineStyle(0)
+    //     this.graphics.beginFill(color, 1)
+    //     this.graphics.drawCircle(this.circVals[i][0],this.circVals[i][1],this.circVals[i][2])
+    //     this.graphics.endFill()
+    //   }
+    // }
+    return this.circVals
 
   },
 
@@ -309,10 +352,13 @@ Game.Run.prototype = {
 
   endTrial: function () {
 
-    this.graphics.lineStyle(0)
-    this.graphics.beginFill(0x000000, 1)
-    this.graphics.drawRect(-600, 0, 1200, 500);
-    this.graphics.endFill()
+    // this.graphics.lineStyle(0)
+    // this.graphics.beginFill(0x000000, 1)
+    // this.graphics.drawRect(-600, 0, 1200, 500);
+    // this.graphics.endFill()
+
+    this.circle_group.destroy()
+    this.probText.destroy()
 
     if (this.streak == 3) {
       corrFeedback = '3 in a row! Extra coin!'
@@ -349,23 +395,40 @@ Game.Run.prototype = {
     } else {
       that = this
       if (this.answer == "incorrect") {
-        this.feedback = this.game.add.text(this.game.width/2, 50, "Try Again!", {font:'80px Arial', fill:disp_col, align:'center'})
+        this.feedback = this.game.add.text(this.game.width/2, 50, "Sorry, that's incorrect :(", {font:'80px Arial', fill:disp_col, align:'center'})
         this.feedback.anchor.x = 0.5
         this.numFeedback.visible = true
         this.game.world.remove(this.progress)
         this.game.world.remove(this.pointDisplay)
 
         setTimeout(function() {
-          that.game.world.remove(that.feedback)
-          that.numFeedback.visible = false
-          that.makeProb()
-          that.makeButtons()
-          that.progress = that.game.add.text(860, 560, that.trial + ' out of 24', {font:'30px Arial', fill:'#FFFFFF', align:'center'})
-          that.progress.anchor.x = 0.5
-
-          that.pointDisplay = that.game.add.text(85, 560, 'Coins: ' + that.points, {font:'30px Arial', fill:'#FFFFFF', align:'center'})
-          that.pointDisplay.anchor.x = 0.5
-
+          if (that.reps == 1) {
+            that.threeTries = true
+            that.game.world.remove(that.feedback)
+            that.numFeedback.visible = false
+            that.op1s.push(that.op1s[that.trial-1])
+            that.op2s.push(that.op2s[that.trial-1])
+            that.nextTrial()
+          } else {
+            that.game.world.remove(that.feedback)
+            that.numFeedback.visible = false
+            that.numFeedback.visible = false
+            that.op1s.push(that.op1s[that.trial-1])
+            that.op2s.push(that.op2s[that.trial-1])
+            that.nextTrial()
+            // that.makeProb()
+            // that.makeButtons()
+            // that.progress = that.game.add.text(860, 560, that.trial + ' out of ' + that.op1s.length, {font:'30px Arial', fill:'#FFFFFF', align:'center'})
+            // that.progress.anchor.x = 0.5
+            //
+            // that.pointDisplay = that.game.add.text(85, 560, 'Coins: ' + that.points, {font:'30px Arial', fill:'#FFFFFF', align:'center'})
+            // that.pointDisplay.anchor.x = 0.5
+          }
+          if (that.equalVal == true) {
+            that.equivalence.push(1)
+          } else {
+            that.equivalence.push(0)
+          }
 
         }, 1000)
 
