@@ -87,14 +87,14 @@ Game.Instructions.prototype = {
 
 	instruct: function (num) {
 		if (num == 1) {
-					instruct_text = this.game.add.text(this.game.world.centerX-60,360,"In this game you'll be deciding whether\n the number of dots equals the number on the right.",
+					instruct_text = this.game.add.text(this.game.world.centerX-60,260,"In this game you'll be deciding if the total number of \ndots on the left is the same as the number on the right",
 					{font: "20px Arial", fill: "#FFFFFF", align: "center"})
-					this.nextB = this.add.button(this.game.world.centerX+175, 430, 'next', function () {
+					this.nextB = this.add.button(this.game.world.centerX+175, 330, 'next', function () {
 						this.game.world.remove(instruct_text)
 						this.rmInstructB = true
 					}, this);
 					this.inst_finished = false
-					this.back_ground = this.makeBox(instruct_text.x-20,instruct_text.y-10,500,120)
+					this.back_ground = this.makeBox(instruct_text.x-10,instruct_text.y-10,500,120)
 					this.game.world.sendToBack(this.back_ground)
 					this.nextB.anchor.x = (0.5,0.5)
 					this.nextB.scale.setTo(0.5,0.5)
@@ -103,9 +103,9 @@ Game.Instructions.prototype = {
 					this.game.world.bringToTop(this.nextB)
 
 		} if (num == 2) {
-					instruct_text = this.game.add.text(this.game.world.centerX-20,360,"If they do equal the number, press True.\nIf they don't equal the number, press False.",
+					instruct_text = this.game.add.text(this.game.world.centerX-20,260,"If they do equal the number, press True.\nIf they don't equal the number, press False.",
 					{font: "20px Arial", fill: "#FFFFFF", align: "center"})
-					this.nextB = this.add.button(this.game.world.centerX+175, 430, 'next', function () {
+					this.nextB = this.add.button(this.game.world.centerX+175, 330, 'next', function () {
 						this.game.world.remove(instruct_text)
 						this.rmInstructB = true
 					}, this);
@@ -115,9 +115,9 @@ Game.Instructions.prototype = {
 					this.game.world.bringToTop(instruct_text)
 					this.game.world.bringToTop(this.nextB)
 		} if (num == 3) {
-					instruct_text = this.game.add.text(this.game.world.centerX+40,360,"Hit next to try this problem now.",
+					instruct_text = this.game.add.text(this.game.world.centerX+40,260,"Hit next to try this problem now.",
 					{font: "20px Arial", fill: "#FFFFFF", align: "center"})
-					this.nextB = this.add.button(this.game.world.centerX+175, 430, 'next', function () {
+					this.nextB = this.add.button(this.game.world.centerX+175, 330, 'next', function () {
 						this.game.world.remove(instruct_text)
 						this.rmInstructB = true
 						this.inst_finished = true
@@ -204,14 +204,17 @@ Game.Instructions.prototype = {
     this.presentedNum = unequalGen(this.equalVal, this.problem[2], this.problem[0], this.problem[1])
 
     this.probText = this.game.add.group()
-    this.game.add.text(370,this.game.height/2-75,'+',{font:'80px Arial', fill:'#FFFFFF', align:'center'}, this.probText)
-    this.game.add.text(760,this.game.height/2-75,'=',{font:'80px Arial', fill:'#FFFFFF', align:'center'}, this.probText)
-    this.game.add.text(840,this.game.height/2-75,this.presentedNum,{font:'80px Arial', fill:'#FFFFFF', align:'center'}, this.probText)
+    this.game.add.text(376.5,this.game.height/2-75,'+',{font:'80px Arial', fill:'#FFFFFF', align:'center'}, this.probText)
+    this.game.add.text(790,this.game.height/2-75,'=',{font:'80px Arial', fill:'#FFFFFF', align:'center'}, this.probText)
+    this.game.add.text(850,this.game.height/2-75,this.presentedNum,{font:'80px Arial', fill:'#FFFFFF', align:'center'}, this.probText)
 
     this.circle_group = this.game.add.group()
 
     this.op1_circs = this.circleGen(this.problem[0],1)
     this.op2_circs = this.circleGen(this.problem[1],2)
+
+    this.op1_box = this.boxGen(1)
+    this.op2_box = this.boxGen(2)
 
 
     this.answerText = [this.problem[0],' + ',this.problem[1], ' = ',this.presentedNum]
@@ -231,6 +234,21 @@ Game.Instructions.prototype = {
 
   },
 
+  boxGen: function(op) {
+    graphics = this.game.add.graphics(0,0)
+    if (op == 1) {
+      x = 30
+    } else {
+      x = 430
+    }
+    graphics.lineStyle(6, 0xffffff, 1);
+    graphics.drawRect(x, 20, 340, 500);
+    this.circle_group.add(graphics)
+
+    return graphics
+  },
+
+
   circleGen: function(numCircs,op) {
     // numCircs = 15
     // if ((this.reps == 0 && typeof(this.answer) == 'undefined') || (this.reps == 1 && this.answer == 'incorrect') || this.answer == 'correct') {
@@ -238,11 +256,12 @@ Game.Instructions.prototype = {
 
       if (op == 1) {
         graphics = this.game.add.graphics(50,20)
-        color = 0xff6262
+        //color = 0xff6262
       } else {
-        graphics = this.game.add.graphics(440,20)
-        color = 0x65c5f0
+        graphics = this.game.add.graphics(450,20)
+        //color = 0x65c5f0
       }
+      color = 0xffffff
 
       y = 50
       coords = []

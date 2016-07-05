@@ -145,14 +145,17 @@ Game.Run.prototype = {
     this.presentedNum = unequalGen(this.equalVal, this.problem[2], this.problem[0], this.problem[1])
 
     this.probText = this.game.add.group()
-    this.game.add.text(370,this.game.height/2-75,'+',{font:'80px Arial', fill:'#FFFFFF', align:'center'}, this.probText)
-    this.game.add.text(760,this.game.height/2-75,'=',{font:'80px Arial', fill:'#FFFFFF', align:'center'}, this.probText)
-    this.game.add.text(840,this.game.height/2-75,this.presentedNum,{font:'80px Arial', fill:'#FFFFFF', align:'center'}, this.probText)
+    this.game.add.text(376.5,this.game.height/2-75,'+',{font:'80px Arial', fill:'#FFFFFF', align:'center'}, this.probText)
+    this.game.add.text(790,this.game.height/2-75,'=',{font:'80px Arial', fill:'#FFFFFF', align:'center'}, this.probText)
+    this.game.add.text(850,this.game.height/2-75,this.presentedNum,{font:'80px Arial', fill:'#FFFFFF', align:'center'}, this.probText)
 
     this.circle_group = this.game.add.group()
 
     this.op1_circs = this.circleGen(this.problem[0],1)
     this.op2_circs = this.circleGen(this.problem[1],2)
+
+    this.op1_box = this.boxGen(1)
+    this.op2_box = this.boxGen(2)
 
 
     this.answerText = [this.problem[0],' + ',this.problem[1], ' = ',this.presentedNum]
@@ -172,25 +175,40 @@ Game.Run.prototype = {
 
   },
 
+  boxGen: function(op) {
+    graphics = this.game.add.graphics(0,0)
+    if (op == 1) {
+      x = 30
+    } else {
+      x = 430
+    }
+    graphics.lineStyle(6, 0xffffff, 1);
+    graphics.drawRect(x, 20, 340, 500);
+    this.circle_group.add(graphics)
+
+    return graphics
+  },
+
   circleGen: function(numCircs,op) {
-    // numCircs = 15
+    //numCircs = 20
     // if ((this.reps == 0 && typeof(this.answer) == 'undefined') || (this.reps == 1 && this.answer == 'incorrect') || this.answer == 'correct') {
       this.circVals = []
 
       if (op == 1) {
         graphics = this.game.add.graphics(50,20)
-        color = 0xff6262
+        //color = 0xff6262
       } else {
-        graphics = this.game.add.graphics(440,20)
-        color = 0x65c5f0
+        graphics = this.game.add.graphics(450,20)
+        //color = 0x65c5f0
       }
+      color = 0xffffff
 
       y = 50
       coords = []
       for (j = 0; j < 5; j++) {
         x = 50
-        for (i = 0; i < 3; i++) {
-          x = x + 50 + 50
+        for (i = 0; i < 4; i++) {
+          x = x + 50 + 30
           coords.push([x,y])
         }
         y = y + 50 + 50
@@ -212,7 +230,7 @@ Game.Run.prototype = {
             loc = Math.floor(this.getRandom(0,coords.length))
           }
         }
-        if (r <= 20) {
+        if (r <= 20) { //slightly increase y offset for all
           yOffset = this.getRandom(0,35)
           xOffset = this.getRandom(0,35)
         } if (r <= 30) {
@@ -222,11 +240,11 @@ Game.Run.prototype = {
           yOffset = this.getRandom(0,15)
           xOffset = this.getRandom(0,15)
         } else if (r <= 80) {
-          yOffset = this.getRandom(3,8)
-          xOffset = this.getRandom(3,8)
+          yOffset = this.getRandom(3,5)
+          xOffset = this.getRandom(3,5)
         } else if (r <= 90) {
-          yOffset = this.getRandom(1,4)
-          xOffset = this.getRandom(1,4)
+          yOffset = 0
+          xOffset = 0
         } else {
           offsetAmount = 0
           yOffset = 0
@@ -238,6 +256,10 @@ Game.Run.prototype = {
         } else {
           yOffset = -yOffset
         }
+
+        //r = 90 //80
+        //xOffset = 0
+        //yOffset = 0
 
         graphics.lineStyle(0)
         graphics.beginFill(color, 1)
@@ -286,6 +308,23 @@ Game.Run.prototype = {
         this.answer = 'correct'
       } else  { //it is unequal and they are incorrect
         this.answer = 'incorrect'
+      }
+    }
+
+
+    if (this.trial-1 >= 24) {
+      if (this.presentedNum == this.problem[0] + this.problem[1]) {
+        if (this.buttonPressed == 'equal') {
+          this.answer = 'correct'
+        } else {
+          this.answer = 'incorrect'
+        }
+      } else {
+        if (this.buttonPressed == 'equal') {
+          this.answer = 'incorrect'
+        } else {
+          this.answer = 'correct'
+        }
       }
     }
 
