@@ -19,13 +19,6 @@ Game.Preloader.prototype = {
 
 		this.load.setPreloadSprite(this.preloadBar)
 
-		// this.game.load.image('go', '/images/Go_button.png')
-		// this.game.load.image('equalB','/images/true_Button.png')
-		// this.game.load.image('unequalB','/images/false_Button.png')
-		// this.game.load.image('balancingact', '/images/BalancingAct_Button.png')
-		// this.game.load.image('coin', '/images/coin_gold.png')
-		// this.game.load.image('next', '/images/next_button.png')
-		// this.game.load.image('back', '/images/back_button.png')
 
 		this.game.load.image('go', '/static/games/bucket_game/images/Go_button.png')
 		this.game.load.image('equalB','/static/games/bucket_game/images/true_button.png')
