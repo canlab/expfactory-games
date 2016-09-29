@@ -47,10 +47,11 @@ Game.Run = function (game) {
 
 Game.Run.prototype = {
 
-  init: function(maxTime, algebra, problem_set) {
+  init: function(maxTime, algebra, problem_set,currBoard) {
       this.ogMaxTime = maxTime;
       this.maxTime = maxTime;
       this.problem_set = problem_set
+      this.currBoard = currBoard //3 will reach max call stack sometimes... 3,2,1,0
 
       if (!algebra)
         {
@@ -60,421 +61,171 @@ Game.Run.prototype = {
   },
 
   create: function () {
-    problems = problemGen(this.week, this.problem_set)
-    reProblems = problemGen(this.week, this.problem_set) //repeat problem set in SPT
-      this.op1s = problems[1].concat(reProblems[1])
-      this.op2s = problems[2].concat(reProblems[2])
-      this.problem_ids = problems[3].concat(reProblems[3])
+    Error.stackTraceLimit = Infinity;
 
-      if (this.algebra) {
-        if (this.maxTime != 0) {
-          this.task = 'SP_missing_timed'
-        } else {
-          this.task = 'SP_missing'
+    //bckgrnd = this.game.add.graphics(0,0)
+    //bckgrnd.beginFill(0xFFFFFF, 1)
+    //bckgrnd.drawRect(0,0,1000,1000)
+    //bckgrnd.endFill()
+
+    //A
+    //op1
+    if (this.problem_set == 'A') {
+      p11 = [7,2,3,4,4,2,5,6,3,6,2,5]
+      p12 = [8,3,4,9,3,5,6,4,9,2,7,6,2,5,7,6,8,5,7,4,2,9,5,6]
+      p13 = [4,9,2,16,6,13,7,2,9,5,15,7,13,5,14,6,17,2,2,6,12,5,16,4,12,4,15,3,8,3,4,8,3,12,6,14,7,3,9,6,5,5,2,5,2,4,7,6]
+      p14 = [2,18,5,12,7,16,5,13,7,4,17,9,5,7,13,2,3,14,6,15,2,12,9,15,16,7,19,6,8,15,4,17,2,6,9,12,5,14,4,18,19,4,15,2,8,8,7,5,4,19,3,14,6,17,5,4,6,3,5,6,16,5,9,3,2,9,6,9,7,16,6,8]
+      //op2
+      p21 = [3,5,6,2,5,6,2,2,7,3,4,4]
+      p22 = [5,6,2,7,7,2,8,5,4,4,5,9,6,4,9,3,6,7,3,9,5,6,8,2]
+      p23 = [12,7,5,3,8,7,3,16,4,12,4,9,6,8,5,9,3,4,15,3,4,7,2,5,6,9,2,6,5,16,15,6,7,5,13,2,5,17,6,12,2,14,14,4,6,2,13,2]
+      p24 = [14,6,8,5,19,2,17,7,5,19,3,16,4,9,6,6,6,5,18,4,4,6,14,2,9,13,4,9,6,8,5,9,15,3,17,4,7,9,12,5,7,9,7,16,5,16,3,12,15,6,7,2,13,5,18,2,2,17,2,19,8,14,6,16,5,7,12,4,15,3,8,15]
+    } else {
+      p11 = [4,7,2,3,3,8,2,6,2,5,4,3]
+      p12 = [3,3,8,6,9,5,7,5,3,8,9,8,4,3,6,2,8,4,7,4,2,7,2,9]
+      p13 = [2,13,12,6,2,3,7,3,7,5,8,18,2,3,8,9,3,4,2,6,12,2,13,13,8,4,16,3,5,9,17,8,3,3,4,5,8,7,14,7,14,4,6,2,15,4,12,9]
+      p14 = [4,15,4,3,18,15,7,3,2,4,7,5,13,8,18,8,3,13,8,5,6,12,9,6,7,5,8,3,7,9,14,17,2,7,4,17,9,3,8,18,16,2,5,9,8,17,8,3,13,2,3,14,2,14,9,6,19,12,3,2,13,19,6,7,16,9,8,4,19,4,12,18]
+
+      p21 = [6,2,3,5,4,2,8,4,7,3,3,2]
+      p22 = [9,2,7,4,8,9,2,3,4,2,3,4,6,5,7,3,9,8,8,3,7,6,8,5]
+      p23 = [8,4,8,14,7,14,6,5,12,9,2,2,13,15,9,3,4,8,3,4,7,18,2,5,7,13,4,9,3,5,2,12,2,12,6,13,4,2,6,8,3,3,7,17,3,16,3,8]
+      p24 = [6,3,13,2,2,9,16,5,17,18,2,9,2,4,7,2,14,9,14,13,17,8,3,14,8,19,17,12,12,8,3,8,3,6,8,6,13,15,19,4,4,13,3,15,7,2,9,19,4,18,9,8,7,6,18,4,8,3,4,8,5,3,7,18,7,5,12,3,5,16,7,9]
+    }
+
+    this.op1 = [p11,p12,p13,p14]
+    this.op2 = [p21,p22,p23,p24]
+
+    this.setParams();
+
+  },
+
+  shuffle: function (array1, array2,repDist1,repDist2,multi1,multi2,reps,counter) {
+    orig1 = array1
+    orig2 = array2
+    var currInd = orig1.length, tempVal1, tempVal2, randInd
+    while (0 != currInd) {
+      randInd = Math.floor(Math.random() * currInd)
+      currInd -= 1
+      tempVal1 = array1[currInd]
+      tempVal2 = array2[currInd]
+      array1[currInd] = array1[randInd]
+      array2[currInd] = array2[randInd]
+      array1[randInd] = tempVal1
+      array2[randInd] = tempVal2
+    }
+
+    sums = []
+    for (i=0;i<orig1.length;i++) {
+      sums.push(array1[i]+array2[i])
+    }
+
+    nReps = 0
+    for (i=0;i<orig1.length;i++) {
+      if (repDist2 == 4) {
+        if (sums[i] == sums[i-repDist1] || sums[i] == sums[i+repDist1] || sums[i] == sums[i-repDist2] || sums[i] == sums[i+repDist2] || sums[i] == sums[i-(repDist2+1)] || sums[i] == sums[i-(repDist2-1)] || sums[i] == sums[i+(repDist2+1)] || sums[i] == sums[i+(repDist2-1)]) {
+          nReps+=1
         }
       } else {
-        if (this.maxTime != 0) {
-          this.task = 'SP_production_timed'
-        } else {
-          this.task = 'SP_production'
+        if (sums[i] == sums[i-repDist1] || sums[i] == sums[i+repDist1] || sums[i] == sums[i-repDist2] || sums[i] == sums[i+repDist2]) {
+          nReps+=1
         }
       }
-      task_type = 'SP'
-      //initializing subject for this game
+    }
+    if (nReps != 0) {
+      array1, array2 = this.shuffle(array1,array2,repDist1,repDist2,multi1,multi2,reps,counter)
+    }
+    // if (nReps!=0 && counter < 2000) {
+    //   counter++
+    //   cross = true
+    //   for (i=0;i<orig1.length;i++) {
+    //     if (sums[i] == sums[i-repDist1] || sums[i] == sums[i+repDist1] || sums[i] == sums[i-repDist2] || sums[i] == sums[i+repDist2]) {// || reps.length == 0) {
+    //       cross = false
+    //       //console.log(reps.length)
+    //     }
+    //   }
+    //   if (cross || reps.length == 0) {
+    //     multi1.push(array1)
+    //     multi2.push(array2)
+    //     reps.push(nReps)
+    //   }
+    //
+    //   indexOfMin = reps.reduce((iMin, x, i, arr) => x < arr[iMin] ? i : iMin, 0)
+    //   //array1 = multi1[indexOfMin]
+    //   //array2 = multi2[indexOfMin]
+    //   array1, array2 = this.shuffle(array1,array2,repDist1,repDist2,multi1,multi2,reps,counter)
+    // } else if (counter == 2000) {
+    //   array1 = multi1[indexOfMin]
+    //   array2 = multi2[indexOfMin]
+    // }
 
-      //this.results = set_up_subject(this.task)
-      //user = this.results[0]
-      //session = this.results[1]
-      //play = this.results[2]
-
-      //this.subject = new Subject(user, this.task, task_type, this.problem_set, session, play)
-
-      this.game.world.setBounds(0, 0, 600, 800);
-      //background.width = this.game.width
-      //background.height = this.game.height
-      this.trial = -1;
-
-      this.feedback = this.game.add.text(this.game.width/2, 200, 'X', {font:'80px Arial', fill:'#FFFFFF', align:'center'});
-      this.feedback.anchor.setTo(0.5, 0.5);
-      this.feedback.visible = false;
-
-      //Timer
-      if (this.maxTime != 0) {
-        this.pie = new PieProgress(this.game, 900, 50, 32);
-        this.game.world.add(this.pie);
-        this.clock = this.game.add.tween(this.pie).to({progress: 1}, this.maxTime, Phaser.Easing.Linear.None, false, 0);
-        this.clock.onComplete.add(this.endTrial, this);
-        timing_mode = 'timed'
-      } else {
-        timing_mode = 'untimed'
-      }
-
-      //make problem display
-      this.problem = new HorizontalProblem(this.game, this.game.width/4-170, 90);
-
-      //make stats
-      this.stats = createStats(this.game, 475, 20);
-
-      //make keypad
-      this.keypad = makeKeypad(this.game, this.game.world.centerX + 360, this.game.height/4, this.onPress, this.onSubmit, this);
-
-      var d = new Date()
-      this.gameStartTime = d.getTime()
-
-      //get things going
-      this.nextTrial();
-
+    return array1, array2
   },
 
-  nextTrial: function () {
-    this.pressed = false
-    //clock
-    var d = new Date();
-    this.start_time = d.getTime();
-    //reset the RT counter
-    this.stats.children[3].text='';
-
-    if (this.maxTime != 0) {
-      this.pie.progress = 0;
-      this.clock.start();
-    }
-
-    if (typeof(this.correct) != 'undefined') {
-      if (this.correct == true || this.reps == 3) {
-        if (this.reps == 3) {
-          this.op1s.push(this.op1s[this.trial])
-          this.op2s.push(this.op2s[this.trial])
-          this.problem_ids.push(this.problem_ids[this.trial])
-        }
-        this.trial++
-        this.reps = 0
-      } else {
-        this.trial = this.trial
+  drawBoard: function (margin,x_spacing,y_spacing,nRow,repDist1,repDist2) {
+    corner_x = margin
+    corner_y = margin
+    this.shuffle(this.op1[this.currBoard],this.op2[this.currBoard],repDist1,repDist2,[],[],[],0)
+    for (i=0; i < this.op1[this.currBoard].length; i++) {
+      problem = this.op1[this.currBoard][i] + this.op2[this.currBoard][i]
+      //problem = this.op1[this.currBoard][i] + ' + ' + this.op2[this.currBoard][i]
+      this.pointDisplay = this.game.add.text(corner_x,corner_y,problem, {font:'30px Arial', fill:'#FFFFFF', align:'center'})
+      this.pointDisplay.anchor.x = 0.5
+      corner_x+=x_spacing
+      if ((i+1) % nRow == 0) {
+        corner_x = margin
+        corner_y+=y_spacing
       }
-    } else {
-      this.trial++
-    }
-
-    this.progress = this.game.add.text(860, 560, this.trial+1 + ' out of ' + this.op1s.length, {font:'30px Arial', fill:'#FFFFFF', align:'center'})
-    this.progress.anchor.x = 0.5
-
-    this.pointDisplay = this.game.add.text(85, 560, 'Coins: ' + this.points, {font:'30px Arial', fill:'#FFFFFF', align:'center'})
-    this.pointDisplay.anchor.x = 0.5
-
-
-    if (this.op1s[this.trial] <= 9) {
-        op1 = '  ' + this.op1s[this.trial];
-    } else { op1 = this.op1s[this.trial];}
-
-    if (this.op2s[this.trial] <= 9) {
-        op2 = '  ' + this.op2s[this.trial];
-    } else { op2 = this.op2s[this.trial];}
-
-    if (this.algebra == false) {
-      this.problem.problem.children[0].text = op1;
-      this.problem.problem.children[1].text = op2;
-      this.problem.problem.children[5].text = '  ?';
-      this.problem.problem.children[5].x = 390
-    } else {
-      this.problem.problem.children[0].text = op1;
-      this.problem.problem.children[1].text = '  ?';
-      this.problem.problem.children[5].text = parseInt(op1) + parseInt(op2);
-    }
-
-
-    if (this.problem.problem.children[1].text.length == 2) {
-      if (this.problem.problem.children[1].x > 160) {
-        this.problem.problem.children[1].x = 160
-      }
-      this.problem.problem.children[1].x += 23
-    } else {
-      this.problem.problem.children[1].x = 160
-    }
-
-  },
-
-  endTrial: function() {
-    var d = new Date();
-    this.stats.RT = d.getTime() - this.start_time;
-    this.grade(d.getTime());
-
-    if (!this.correct) {
-      this.streak = 0
-      this.reps += 1
-    } else {
-      if (this.reps == 0) {
-        this.streak += 1
-      }
-      this.reps = 0
-    }
-
-    this.giveFeedback();
-    if ((this.trial +1) >= this.op1s.length && this.correct == true) {
-      this.quitGame();
-    } else {
-      this.game.time.events.add(Phaser.Timer.SECOND, this.nextTrial, this);
     }
   },
 
-  grade: function (time_stamp) {
-    this.numGraded+= 1
-    if (this.algebra === false) {
-      this.user_answer = parseInt(this.problem.problem.children[5].text);
-      correct_answer = parseInt(this.problem.problem.children[0].text) + parseInt(this.problem.problem.children[1].text);
-    }
-    else {
-      this.user_answer = parseInt(this.problem.problem.children[1].text);
-      correct_answer = parseInt(this.problem.problem.children[5].text - parseInt(this.problem.problem.children[0].text));
-    }
-    if (this.user_answer == correct_answer) {
-      this.points+=1
-      this.correct = true;
-      //off by one bc of grade order
-      if (this.streak == 2) {
-        this.feedback.text = "3 in a row! Extra coin!"
-        this.feedback.fill = '#3CF948'
-        //change color to green...
-        this.points+=1
-      } else if (this.streak == 6) {
-        this.feedback.text = "7 in a row! Extra coin!"
-        this.feedback.fill = '#3CF948'
-        this.points+=1
-      } else if (this.streak == 14) {
-        this.feedback.text = "15 in a row! Extra coin!"
-        this.feedback.fill = '#3CF948'
-        this.points+=1
-      } else if (this.streak == 25) {
-        this.feedback.text = "Perfect Score! Extra coin!"
-        this.feedback.fill = '#3CF948'
-        this.points+=1
-      } else {
-        correct_feedback = ['Way to go!','Awesome!','You Rock!','Correct!','Fantastic!','Nice!']
-        feedbackIndex = Math.floor(Math.random() * correct_feedback.length) + 0
-        this.feedback.text = correct_feedback[feedbackIndex]
-        this.feedback.fill = '#FFFFFF'
-      }
-      this.stats.points++;
+  setParams: function () {
 
-      if (this.maxTime != 0) {
-        this.maxTime = this.ogMaxTime;
-      }
-    } else {
-      if (this.points == 0) {
-        this.points = 0
-      } else {
-        this.points -= 1
-      }
-      this.correct = false;
-      this.feedback.text = 'Try Again!'
-      this.feedback.fill = '#FFFFFF'
-      this.stats.points--;
-      if (this.maxTime != 0) {
-        this.maxTime += 1000
-      }
-    };
-    if (this.maxTime != 0) {
-      this.clock.pendingDelete = true
-      this.clock = this.game.add.tween(this.pie).to({progress: 1}, this.maxTime, Phaser.Easing.Linear.None, false, 0);
-      this.clock.onComplete.add(this.endTrial, this)
-    }
+    if (this.currBoard == 0) {
+      margin = 150
+      x_spacing = 100
+      y_spacing = 60
+      nRow = 3
+      repDist = 5
+      repDist1 = 1
+      repDist2 = 3
+      //draw bingo board and dividers here
+      this.drawBoard(margin,x_spacing,y_spacing,nRow,repDist1,repDist2)
 
-    this.save()
+    } else if (this.currBoard == 1) {
+      margin = 150
+      x_spacing = 100
+      y_spacing = 60
+      nRow = 4
+      repDist = 6
+      repDist1 = 1
+      repDist2 = 4
 
+      //draw bingo board and dividers here
+      this.drawBoard(margin,x_spacing,y_spacing,nRow,repDist1,repDist2)
+    } else if (this.currBoard == 2) {
+      margin = 150
+      x_spacing = 100
+      y_spacing = 60
+      nRow = 6
+      repDist = 8
+      repDist1 = 1
+      repDist2 = 6
 
-    this.stats.children[1].text=this.stats.points;
-    this.stats.children[3].text=this.stats.RT;
-  },
+      //draw bingo board and dividers here
+      this.drawBoard(margin,x_spacing,y_spacing,nRow,repDist1,repDist2)
+    } else if (this.currBoard == 3) {
+      margin = 150
+      x_spacing = 100
+      y_spacing = 60
+      nRow = 8
+      repDist = 10
+      repDist1 = 1
+      repDist2 = 8
 
-  save: function() {
-    inputData('answer', this.user_answer)
-
-    if (this.algebra == false) {
-        inputData('problem', [parseInt(op1),' + ',parseInt(op2),' = ?'].join(""))
-    } else {
-        inputData('problem', [parseInt(op1),' + ? = ',parseInt(op1)+parseInt(op2)].join(""))
-    }
-
-    inputData('n1', this.op1s[this.trial])
-    inputData('n2', this.op2s[this.trial])
-    inputData('problem_id', this.problem_ids[this.trial])
-    inputData('points', this.points)
-    inputData('solution', this.op2s[this.trial])
-    inputData('RT', this.stats.RT/1000)
-    if (this.correct) {
-      inputData('ACC', 1)
-    } else {
-      inputData('ACC',0)
-    }
-
-    if (this.trial+1 >= this.op1s.length && this.correct) {
-      inputData('finished', 1)
-    } else {
-      inputData('finished', 0)
-    }
-
-    sendData(this.numGraded)
-
-  },
-
-  giveFeedback: function () {
-    this.game.add.tween(this.problem.problem).to( { alpha: 0 }, 100, "Linear", true);
-    this.game.add.tween(this.keypad).to( { alpha: 0 }, 100, "Linear", true);
-
-      this.numFeedback = this.game.add.text(0,0,'null')
-      this.numFeedback.visible = false
-
-    if (this.reps != 3) {
-      if (this.correct==true) {
-        //this.stars.visible = true;
-        this.feedback.visible = true;
-        this.game.world.remove(this.progress)
-        this.game.world.remove(this.pointDisplay)
-        if (!this.algebra) {
-          this.numFeedback = this.game.add.text(this.game.width/2, 300, parseInt(op1) + ' + ' + parseInt(op2) + ' = ' + this.user_answer, {font:'80px Arial', fill:'#FFFFFF', align:'center'});
-        } else {
-          this.numFeedback = this.game.add.text(this.game.width/2, 300, parseInt(op1) + ' + ' + this.user_answer + ' = ' + (parseInt(op1)+parseInt(op2)), {font:'80px Arial', fill:'#FFFFFF', align:'center'});
-        }
-        this.numFeedback.visible = true;
-        this.numFeedback.anchor.x = 0.5;
-        this.game.world.remove(this.progress)
-        this.game.world.remove(this.pointDisplay)
-      } else {
-        this.feedback.visible = true;
-        if (isNaN(this.user_answer)) {
-          this.numFeedback = this.game.add.text(this.game.width/2, 300, " ", {font:'80px Arial', fill:'#FFFFFF', align:'center'});
-        } else {
-          if (!this.algebra) {
-            this.numFeedback = this.game.add.text(this.game.width/2, 300, parseInt(op1) + ' + ' + parseInt(op2) + ' ≠ ' + this.user_answer, {font:'80px Arial', fill:'#FFFFFF', align:'center'});
-          } else {
-            this.numFeedback = this.game.add.text(this.game.width/2, 300, parseInt(op1) + ' + ' + this.user_answer + ' ≠ ' + (parseInt(op1)+parseInt(op2)), {font:'80px Arial', fill:'#FFFFFF', align:'center'});
-          }
-        }
-        this.numFeedback.visible = true;
-        this.numFeedback.anchor.x = 0.5;
-        this.game.world.remove(this.progress)
-        this.game.world.remove(this.pointDisplay)
-      }
-    } else {
-      this.feedback.text = "Sorry, the correct answer is"
-      this.feedback.cssFont = '70px Arial'
-      this.feedback.visible = true
-      if (isNaN(this.user_answer)) {
-        this.numFeedback = this.game.add.text(this.game.width/2, 300, " ", {font:'80px Arial', fill:'#FFFFFF', align:'center'});
-      } else {
-        if (!this.algebra) {
-          this.numFeedback = this.game.add.text(this.game.width/2, 300, parseInt(op1) + ' + ' + parseInt(op2) + ' = ' + (parseInt(op1)+parseInt(op2)), {font:'80px Arial', fill:'#FFFFFF', align:'center'});
-        } else {
-          this.numFeedback = this.game.add.text(this.game.width/2, 300, parseInt(op1) + ' + ' + parseInt(op2) + ' = ' + (parseInt(op1)+parseInt(op2)), {font:'80px Arial', fill:'#FFFFFF', align:'center'});
-        }
-      }
-      this.numFeedback.visible = true;
-      this.numFeedback.anchor.x = 0.5;
-      this.game.world.remove(this.progress)
-      this.game.world.remove(this.pointDisplay)
-
-    }
-
-
-    this.game.time.events.add(Phaser.Timer.SECOND, function() {
-        //this.stars.visible = false;
-        this.feedback.visible = false;
-        this.numFeedback.visible = false;
-        this.game.add.tween(this.problem.problem).to( { alpha: 1 }, 100, "Linear", true);
-        this.game.add.tween(this.keypad).to( { alpha: 1 }, 100, "Linear", true);
-      },
-    this);
-
-  },
-
-
-  onSubmit: function () {
-    if (!this.pressed) {
-      this.pressed = true
-      if (this.maxTime != 0) {
-        this.clock.stop();
-        this.clock.pendingDelete = false;
-      }
-      if (this.maxTime == 0 || this.pie._progress != 1) {
-        this.endTrial();
-      }
+      //draw bingo board and dividers here
+      this.drawBoard(margin,x_spacing,y_spacing,nRow,repDist1,repDist2)
     }
 
   },
-
-  onPress: function (button) {
-    problem = this.problem;
-
-    if (this.algebra === false) {
-      //which child contains the response
-      i = 5;
-      initPos = problem.problem.children[i].x
-      //initPos = 390
-    } else {
-      i = 1;
-      initPos = 160
-    }
-
-    t = problem.problem.children[i].text
-
-    if (t == '?' || t == '  ?') {
-      t = '';
-      problem.problem.children[i].text ='';
-    }
-
-    if (button.number =='-') {
-      problem.problem.children[i].text = t.substring(0, t.length - 1);
-      if (this.algebra == false) {
-        problem.problem.children[i].x = initPos
-      } else {
-        problem.problem.children[i].x += 20
-      }
-    }
-    else {
-      j = t + button.number;
-      if (parseInt(j) < 10) {j = '  ' + j;}
-      else {j = parseInt(j);}
-      problem.problem.children[i].text = '  ' + parseInt(j);
-      if (problem.problem.children[i].text.length > 3 & this.algebra) {
-        problem.problem.children[i].x -= 20
-      } else {
-        problem.problem.children[i].x = initPos
-      }
-
-    }
-  },
-
-  update: function () {
-    this.problem.update();
-  },
-
-  quitGame: function (pointer) {
-      //  Here you should destroy anything you no longer need.
-      //  Stop music, delete sprites, purge caches, free resources, all that good stuff.
-      this.problem.problem.visible = false;
-      this.keypad.visible = false;
-
-      d = new Date()
-      endTime = d.getTime()
-
-      this.numGraded = 0
-
-      //this.subject.inputData('endGameStats', [this.gameStartTime, endTime, 'completed'])
-      //session_url = 'http://' + homebase + '/session/'
-
-      //nextTask(this.results[0], this.task)
-
-      //Let them know it's done...
-      this.game.time.events.add(Phaser.Timer.SECOND, function () {
-        endText = this.game.add.text(this.game.width/2, 200, 'All done!', {font:'96px Arial', fill:'#FFFFFF', align:'center'});
-        endText.anchor.x = 0.5
-        finalPoints = this.game.add.text(this.game.width/2, 400, 'You got ' + this.points + ' points', {font:'76px Arial', fill:'#FFFFFF', align:'center'});
-        finalPoints.anchor.x = 0.5
-        totalPoints = this.points
-        this.points = 0
-        //  Then let's go back to the main menu.
-        //this.game.time.events.add(Phaser.Timer.SECOND * 2, function() {this.state.start('Menu', true, false, this.problem_set);}, this);
-      }, this);
-
-  }
 
 };
