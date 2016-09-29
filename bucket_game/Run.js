@@ -28,6 +28,7 @@ Game.Run = function (game) {
     this.reps = 0
     this.usedLocs = []
     this.threeTries = false
+    this.nextTrialTime = 0
 
 };
 
@@ -39,6 +40,11 @@ Game.Run.prototype = {
   },
 
   create: function() {
+    this.spaceKey = this.game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
+    this.leftKey = this.game.input.keyboard.addKey(Phaser.Keyboard.LEFT);
+
+
+
     problems = problemGen(this.week, this.problem_set)
     reProblems = problemGen(this.week, this.problem_set) //repeat problem set in SPT
     this.op1s = problems[1].concat(reProblems[1])
@@ -67,7 +73,7 @@ Game.Run.prototype = {
     d = new Date()
     this.startTime = d.getTime()
 
-    this.makeButtons()
+    //this.makeButtons()
 
     this.nextTrial()
 
@@ -102,8 +108,9 @@ Game.Run.prototype = {
 
   nextTrial: function () {
 
-    var d = new Date()
-    this.start_time = d.getTime()
+    // var d = new Date()
+    // this.start_time = d.getTime()
+    //
 
     if (this.op1s[this.trial] <= 9) {
         op1 = '  ' + this.op1s[this.trial];
@@ -117,16 +124,23 @@ Game.Run.prototype = {
     this.problem[1] = +op2;
     this.problem[2] = +op1 + +op2;
 
-    this.trial++
-    this.progress = this.game.add.text(860, 560, this.trial + ' out of ' + this.op1s.length, {font:'30px Arial', fill:'#FFFFFF', align:'center'})
-    this.progress.anchor.x = 0.5
-
-    this.pointDisplay = this.game.add.text(85, 560, 'Coins: ' + this.points, {font:'30px Arial', fill:'#FFFFFF', align:'center'})
-    this.pointDisplay.anchor.x = 0.5
-
+    console.log('op 1:')
+    console.log(op1)
+    console.log('op 2:')
+    console.log(op2)
+    //
+    // this.trial++
+    // this.progress = this.game.add.text(860, 560, this.trial + ' out of ' + this.op1s.length, {font:'30px Arial', fill:'#FFFFFF', align:'center'})
+    // this.progress.anchor.x = 0.5
+    //
+    // this.pointDisplay = this.game.add.text(85, 560, 'Coins: ' + this.points, {font:'30px Arial', fill:'#FFFFFF', align:'center'})
+    // this.pointDisplay.anchor.x = 0.5
+    //
     this.makeProb()
-    this.equal.visible = true
-    this.unequal.visible = true
+    // this.equal.visible = true
+    // this.unequal.visible = true
+
+
   },
 
   makeProb: function() {
@@ -137,17 +151,12 @@ Game.Run.prototype = {
       this.equalVal = false
     }
 
-    // if (this.buttonPressed == 'none' || this.answer == 'correct' || this.reps == 1) {
-    //   this.presentedNum = unequalGen(equal, this.problem[2], this.problem[0], this.problem[1])
-    // } else if (this.answer == 'incorrect') {
-    //   this.presentedNum = this.presentedNum
-    // }
-    this.presentedNum = unequalGen(this.equalVal, this.problem[2], this.problem[0], this.problem[1])
-
-    this.probText = this.game.add.group()
-    this.game.add.text(376.5,this.game.height/2-75,'+',{font:'80px Arial', fill:'#FFFFFF', align:'center'}, this.probText)
-    this.game.add.text(790,this.game.height/2-75,'=',{font:'80px Arial', fill:'#FFFFFF', align:'center'}, this.probText)
-    this.game.add.text(850,this.game.height/2-75,this.presentedNum,{font:'80px Arial', fill:'#FFFFFF', align:'center'}, this.probText)
+    // this.presentedNum = unequalGen(this.equalVal, this.problem[2], this.problem[0], this.problem[1])
+    //
+    // this.probText = this.game.add.group()
+    // this.game.add.text(376.5,this.game.height/2-75,'+',{font:'80px Arial', fill:'#FFFFFF', align:'center'}, this.probText)
+    // this.game.add.text(790,this.game.height/2-75,'=',{font:'80px Arial', fill:'#FFFFFF', align:'center'}, this.probText)
+    // this.game.add.text(850,this.game.height/2-75,this.presentedNum,{font:'80px Arial', fill:'#FFFFFF', align:'center'}, this.probText)
 
     this.circle_group = this.game.add.group()
 
@@ -155,50 +164,52 @@ Game.Run.prototype = {
     this.op2_circs = this.circleGen(this.problem[1],2)
 
     this.op1_box = this.boxGen(1)
-    this.op2_box = this.boxGen(2)
+    //this.op2_box = this.boxGen(2)
 
+    // this.answerText = [this.problem[0],' + ',this.problem[1], ' = ',this.presentedNum]
+    // this.answerText = this.answerText.join('')
 
-    this.answerText = [this.problem[0],' + ',this.problem[1], ' = ',this.presentedNum]
-    this.answerText = this.answerText.join('')
-    // this.probText = this.game.add.text(this.game.width/2, this.game.height/2-100, this.answerText, {font:'80px Arial', fill:'#FFFFFF', align:'center'})
-    // this.probText.anchor.x = 0.5
-    //
-    if (this.equalVal) {
-      numFeedbackText = this.answerText
-    } else {
-      numFeedbackText = [this.problem[0],' + ',this.problem[1], ' ≠ ',this.presentedNum]
-      numFeedbackText = numFeedbackText.join('')
-    }
-    this.numFeedback = this.game.add.text(this.game.width/2, this.game.height/2-100, numFeedbackText, {font:'80px Arial', fill:'#FFFFFF', align:'center'})
-    this.numFeedback.anchor.x = 0.5
-    this.numFeedback.visible = false
+    // if (this.equalVal) {
+    //   numFeedbackText = this.answerText
+    // } else {
+    //   numFeedbackText = [this.problem[0],' + ',this.problem[1], ' ≠ ',this.presentedNum]
+    //   numFeedbackText = numFeedbackText.join('')
+    // }
+    // this.numFeedback = this.game.add.text(this.game.width/2, this.game.height/2-100, numFeedbackText, {font:'80px Arial', fill:'#FFFFFF', align:'center'})
+    // this.numFeedback.anchor.x = 0.5
+    // this.numFeedback.visible = false
 
   },
 
   boxGen: function(op) {
     graphics = this.game.add.graphics(0,0)
     if (op == 1) {
-      x = 30
-    } else {
-      x = 430
+      x = 460
+    } else if (op == 3) {
+      x = 300
+      graphics.drawRect(x, 50, 340, 10);
+    }else {
+      x = 530
     }
     graphics.lineStyle(6, 0xffffff, 1);
-    graphics.drawRect(x, 20, 340, 500);
+    graphics.drawRect(x, 50, 3, 500);
     this.circle_group.add(graphics)
+
+
 
     return graphics
   },
 
   circleGen: function(numCircs,op) {
-    //numCircs = 20
+    //numCircs = 19
     // if ((this.reps == 0 && typeof(this.answer) == 'undefined') || (this.reps == 1 && this.answer == 'incorrect') || this.answer == 'correct') {
       this.circVals = []
 
       if (op == 1) {
-        graphics = this.game.add.graphics(50,20)
+        graphics = this.game.add.graphics(80,50)
         //color = 0xff6262
       } else {
-        graphics = this.game.add.graphics(450,20)
+        graphics = this.game.add.graphics(550,50)
         //color = 0x65c5f0
       }
       color = 0xffffff
@@ -218,11 +229,11 @@ Game.Run.prototype = {
       for (i = 0; i < numCircs; i++) {
         rProb = this.getRandom(0,1)
         if (rProb <= 0.6) {
-          r = this.getRandom(10,30)
+          r = this.getRandom(20,30)
         } else if (rProb <= 0.85) {
           r = this.getRandom(31,40)
         } else {
-          r = this.getRandom(61,90)
+          r = this.getRandom(61,85)
         }
         loc = Math.floor(this.getRandom(0,coords.length))
         for (c = 0; c < 1000; c++) {
@@ -237,11 +248,11 @@ Game.Run.prototype = {
           yOffset = this.getRandom(0,25)
           xOffset = this.getRandom(0,25)
         } else if (r <= 60) {
-          yOffset = this.getRandom(0,15)
-          xOffset = this.getRandom(0,15)
+          yOffset = this.getRandom(0,10)
+          xOffset = this.getRandom(0,10)
         } else if (r <= 80) {
-          yOffset = this.getRandom(3,5)
-          xOffset = this.getRandom(3,5)
+          yOffset = this.getRandom(0,1)
+          xOffset = this.getRandom(0,1)
         } else if (r <= 90) {
           yOffset = 0
           xOffset = 0
@@ -256,7 +267,7 @@ Game.Run.prototype = {
         } else {
           yOffset = -yOffset
         }
-
+        //r = 10
         //r = 90 //80
         //xOffset = 0
         //yOffset = 0
@@ -488,6 +499,25 @@ Game.Run.prototype = {
   },
 
   update: function() {
+
+    if (this.leftKey.isDown)
+    {
+      if (this.game.time.now > this.nextTrialTime) {
+          this.circle_group.destroy()
+          this.nextTrial()
+          this.nextTrialTime = this.game.time.now + 250
+        this.trial++
+      }
+    }
+
+    if (this.spaceKey.isDown)
+    {
+      if (this.game.time.now > this.nextTrialTime) {
+        this.circle_group.destroy()
+        this.nextTrial()
+        this.nextTrialTime = this.game.time.now + 250
+      }
+    }
 
   },
 

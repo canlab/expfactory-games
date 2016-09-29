@@ -15,6 +15,7 @@ Game.Preloader.prototype = {
 
 	preload: function () {
 
+
 		this.preloadBar = this.add.sprite(120, 200, 'preloaderBar')
 
 		this.load.setPreloadSprite(this.preloadBar)
