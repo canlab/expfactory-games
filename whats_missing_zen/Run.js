@@ -99,7 +99,7 @@ Game.Run.prototype = {
 
   },
 
-  shuffle: function (array1, array2,repDist1,repDist2,multi1,multi2,reps,counter) {
+  shuffle: function (array1, array2,repDist1,repDist2,multi1,multi2,reps,counter,nSpaces) {
     orig1 = array1
     orig2 = array2
     var currInd = orig1.length, tempVal1, tempVal2, randInd
@@ -118,56 +118,56 @@ Game.Run.prototype = {
     for (i=0;i<orig1.length;i++) {
       sums.push(array1[i]+array2[i])
     }
-
+    //spaces = Array(nSpaces+1).fill(0)
+    //sums = sums.concat(spaces)
     nReps = 0
+    issues = []
     for (i=0;i<orig1.length;i++) {
-      if (repDist2 == 4) {
         if (sums[i] == sums[i-repDist1] || sums[i] == sums[i+repDist1] || sums[i] == sums[i-repDist2] || sums[i] == sums[i+repDist2] || sums[i] == sums[i-(repDist2+1)] || sums[i] == sums[i-(repDist2-1)] || sums[i] == sums[i+(repDist2+1)] || sums[i] == sums[i+(repDist2-1)]) {
-          nReps+=1
+          if (sums[i] == 0) {
+            if (sums[i-repDist1] == 0 || sums[i+repDist1] == 0) {
+              nReps+=1
+              issues.push([i,sums[i]])
+            } else if (sums[i-repDist2] == 0 || sums[i+repDist2] == 0) {
+              nReps+=1
+              issues.push([i,sums[i]])
+            }
+          } else {
+            nReps+=1
+            issues.push([i,sums[i]])
+          }
         }
-      } else {
-        if (sums[i] == sums[i-repDist1] || sums[i] == sums[i+repDist1] || sums[i] == sums[i-repDist2] || sums[i] == sums[i+repDist2]) {
-          nReps+=1
+    }
+    return [array1, array2, nReps,issues]
+  },
+
+  drawBoard: function (margin,x_spacing,y_spacing,nRow,repDist1,repDist2,nSpaces,nIters) {
+    corner_x = margin
+    corner_y = margin
+    op1s = this.op1[this.currBoard].concat(Array(nSpaces).fill(0))
+    op2s = this.op2[this.currBoard].concat(Array(nSpaces).fill(0))
+    minReps = 1000
+    for (kk=0;kk<nIters;kk++) {
+      output = this.shuffle(op1s,op2s,repDist1,repDist2,[],[],[],0,nSpaces)
+      if (output[2] < minReps) {
+        minReps = output[2]
+        minIssues = output[3]
+        problems = []
+        for (jj=0; jj < output[0].length; jj++) {
+          problem = output[0][jj] + output[1][jj]
+          problems.push(problem)
         }
       }
     }
-    if (nReps != 0) {
-      array1, array2 = this.shuffle(array1,array2,repDist1,repDist2,multi1,multi2,reps,counter)
-    }
-    // if (nReps!=0 && counter < 2000) {
-    //   counter++
-    //   cross = true
-    //   for (i=0;i<orig1.length;i++) {
-    //     if (sums[i] == sums[i-repDist1] || sums[i] == sums[i+repDist1] || sums[i] == sums[i-repDist2] || sums[i] == sums[i+repDist2]) {// || reps.length == 0) {
-    //       cross = false
-    //       //console.log(reps.length)
-    //     }
-    //   }
-    //   if (cross || reps.length == 0) {
-    //     multi1.push(array1)
-    //     multi2.push(array2)
-    //     reps.push(nReps)
-    //   }
-    //
-    //   indexOfMin = reps.reduce((iMin, x, i, arr) => x < arr[iMin] ? i : iMin, 0)
-    //   //array1 = multi1[indexOfMin]
-    //   //array2 = multi2[indexOfMin]
-    //   array1, array2 = this.shuffle(array1,array2,repDist1,repDist2,multi1,multi2,reps,counter)
-    // } else if (counter == 2000) {
-    //   array1 = multi1[indexOfMin]
-    //   array2 = multi2[indexOfMin]
-    // }
+    console.log(minIssues)
+    console.log(minReps)
 
-    return array1, array2
-  },
-
-  drawBoard: function (margin,x_spacing,y_spacing,nRow,repDist1,repDist2) {
-    corner_x = margin
-    corner_y = margin
-    this.shuffle(this.op1[this.currBoard],this.op2[this.currBoard],repDist1,repDist2,[],[],[],0)
-    for (i=0; i < this.op1[this.currBoard].length; i++) {
-      problem = this.op1[this.currBoard][i] + this.op2[this.currBoard][i]
+    for (i=0; i < problems.length; i++) {
+      problem = problems[i]//op1s[i] + op2s[i]
       //problem = this.op1[this.currBoard][i] + ' + ' + this.op2[this.currBoard][i]
+      if (problem == 0) {
+        problem = ' '
+      }
       this.pointDisplay = this.game.add.text(corner_x,corner_y,problem, {font:'30px Arial', fill:'#FFFFFF', align:'center'})
       this.pointDisplay.anchor.x = 0.5
       corner_x+=x_spacing
@@ -184,46 +184,47 @@ Game.Run.prototype = {
       margin = 150
       x_spacing = 100
       y_spacing = 60
-      nRow = 3
+      nRow = 4//3
       repDist = 5
       repDist1 = 1
-      repDist2 = 3
+      repDist2 = 4//3
+      nSpaces = 4
       //draw bingo board and dividers here
-      this.drawBoard(margin,x_spacing,y_spacing,nRow,repDist1,repDist2)
+      this.drawBoard(margin,x_spacing,y_spacing,nRow,repDist1,repDist2,nSpaces,100000)
 
     } else if (this.currBoard == 1) {
       margin = 150
       x_spacing = 100
       y_spacing = 60
-      nRow = 4
-      repDist = 6
+      nRow = 5//6
+      repDist = 5//6
       repDist1 = 1
-      repDist2 = 4
-
+      repDist2 = 6
+      nSpaces = 1//12
       //draw bingo board and dividers here
-      this.drawBoard(margin,x_spacing,y_spacing,nRow,repDist1,repDist2)
+      this.drawBoard(margin,x_spacing,y_spacing,nRow,repDist1,repDist2,nSpaces,100000)//1000000)
     } else if (this.currBoard == 2) {
       margin = 150
       x_spacing = 100
       y_spacing = 60
-      nRow = 6
-      repDist = 8
+      nRow = 7//8
+      repDist = 7//8
       repDist1 = 1
-      repDist2 = 6
-
+      repDist2 = 8
+      nSpaces = 1//0//8//16
       //draw bingo board and dividers here
-      this.drawBoard(margin,x_spacing,y_spacing,nRow,repDist1,repDist2)
+      this.drawBoard(margin,x_spacing,y_spacing,nRow,repDist1,repDist2,nSpaces,100000)//5000000)
     } else if (this.currBoard == 3) {
       margin = 150
       x_spacing = 100
       y_spacing = 60
-      nRow = 8
-      repDist = 10
+      nRow = 9
+      repDist = 9
       repDist1 = 1
       repDist2 = 8
-
+      nSpaces = 9//28
       //draw bingo board and dividers here
-      this.drawBoard(margin,x_spacing,y_spacing,nRow,repDist1,repDist2)
+      this.drawBoard(margin,x_spacing,y_spacing,nRow,repDist1,repDist2,nSpaces,1000000)
     }
 
   },
