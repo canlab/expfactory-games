@@ -154,12 +154,12 @@ Game.Run.prototype = {
 
     this.nextTrial()
 
-    this.blurX = this.game.add.filter('BlurX');
-    this.blurY = this.game.add.filter('BlurY');
-    this.threshold = this.game.add.filter('Threshold');
+    //this.blurX = this.game.add.filter('BlurX');
+    //this.blurY = this.game.add.filter('BlurY');
+    //this.threshold = this.game.add.filter('Threshold');
 
-    this.blurX.blur = 15//20; //100
-    this.blurY.blur = 15//20;//25; //1
+    //this.blurX.blur = 15//20; //100
+    //this.blurY.blur = 15//20;//25; //1
 
   },
 
@@ -443,8 +443,8 @@ Game.Run.prototype = {
       //ball.body.mass = 50
       //ball.body.damping = 0.3;
       this.balance[bal].add(ball)
-      ball.filters = [this.blurX, this.blurY,this.threshold]
-      ball.filterArea = this.game.camera.view;
+      //ball.filters = [this.blurX, this.blurY,this.threshold]
+      //ball.filterArea = this.game.camera.view;
     }
   },
 

@@ -53,10 +53,10 @@ Game.Preloader.prototype = {
 		// this.game.load.image('coin', 'images/coin_gold.png')
 		// this.game.load.image('next', 'images/next_button.png')
 		// this.game.load.image('back', 'images/back_button.png')
-
-		this.game.load.script('filterX', 'https://cdn.rawgit.com/photonstorm/phaser/master/filters/BlurX.js');
-    this.game.load.script('filterY', 'https://cdn.rawgit.com/photonstorm/phaser/master/filters/BlurY.js');
-		this.game.load.script('threshold','threshold.js')
+		//
+		// this.game.load.script('filterX', 'https://cdn.rawgit.com/photonstorm/phaser/master/filters/BlurX.js');
+    // this.game.load.script('filterY', 'https://cdn.rawgit.com/photonstorm/phaser/master/filters/BlurY.js');
+		// this.game.load.script('threshold','threshold.js')
 
 	},
 
