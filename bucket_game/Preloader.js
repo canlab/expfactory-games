@@ -36,6 +36,9 @@ Game.Preloader.prototype = {
 		this.game.load.image('coin', '/static/games/bucket_game/images/coin_gold.png')
 		this.game.load.image('next', '/static/games/bucket_game/images/next_button.png')
 		this.game.load.image('back', '/static/games/bucket_game/images/back_button.png')
+		this.game.load.image('triangle', '/static/games/bucket_game/images/triangle.svg')
+		this.game.load.image('circle', '/static/games/bucket_game/images/circle.svg')
+		this.game.load.image('arrow','/static/games/bucket_game/images/arrow.svg')
 
 		// this.game.load.spritesheet('balls', 'images/balls.png', 17, 17)
     // this.game.load.spritesheet('board', 'images/board.png')
@@ -53,6 +56,10 @@ Game.Preloader.prototype = {
 		// this.game.load.image('coin', 'images/coin_gold.png')
 		// this.game.load.image('next', 'images/next_button.png')
 		// this.game.load.image('back', 'images/back_button.png')
+		// this.game.load.image('triangle', 'images/triangle.svg')
+		// this.game.load.image('circle', 'images/circle.svg')
+		// this.game.load.image('arrow','images/arrow.svg')
+
 		//
 		// this.game.load.script('filterX', 'https://cdn.rawgit.com/photonstorm/phaser/master/filters/BlurX.js');
     // this.game.load.script('filterY', 'https://cdn.rawgit.com/photonstorm/phaser/master/filters/BlurY.js');

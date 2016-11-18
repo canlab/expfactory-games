@@ -54,6 +54,9 @@ Game.Run.prototype = {
     this.op2s = problems[2].concat(reProblems[2])
     this.problem_ids = problems[3].concat(reProblems[3])
 
+    //this.op1s = [12,10]
+    //this.op2s = [12,8]
+    //this.problem_ids = [2,2]
     //task info
     this.task = 'VS_verification'
     task_type = 'VS'
@@ -64,6 +67,10 @@ Game.Run.prototype = {
 
     equivalenceGen(false)
     this.equivalence = equivalence
+    equivalenceGen(false)
+    this.equivalence = this.equivalence.concat(equivalence)
+
+    //this.equivalence = [2,2]
 
     this.game.world.setBounds(0, 0, 960, 600);
     this.game.physics.startSystem(Phaser.Physics.P2JS);
@@ -82,6 +89,8 @@ Game.Run.prototype = {
     this.balance[0].weight = 0
     this.balance[1] = this.game.add.group()
     this.balance[1].weight = 0
+
+    this.scaleGroup = this.game.add.group()
 
     this.jarCollisionGroup = this.game.physics.p2.createCollisionGroup()
     this.ballCollisionGroup = this.game.physics.p2.createCollisionGroup()
@@ -151,6 +160,55 @@ Game.Run.prototype = {
     measure3.width = measure3.width*1.8
     this.balance[1].add(measure3)
 
+    this.pivot = this.game.add.sprite(480,440,'board')
+    this.pivot.anchor.x = 0.5
+    this.pivot.anchor.y = 0.5
+    this.pivot.width = this.pivot.width*4
+    this.pivot.height = this.pivot.height*2
+    this.scaleGroup.add(this.pivot)
+
+    this.attach1 = this.game.add.sprite(270,400,'board')
+    this.attach1.anchor.x = 0.5
+    this.attach1.anchor.y = 0.5
+    this.attach1.height = this.attach1.height*13
+    this.attach1.width = this.attach1.width/2
+    this.balance[0].add(this.attach1)
+
+    this.attach2 = this.game.add.sprite(670,400,'board')
+    this.attach2.anchor.x = 0.5
+    this.attach2.anchor.y = 0.5
+    this.attach2.height = this.attach2.height*13
+    this.attach2.width = this.attach2.width/2
+    this.balance[1].add(this.attach2)
+
+    this.triangle = this.game.add.sprite(475,435,'triangle')
+    this.triangle.anchor.x = 0.5
+    this.triangle.anchor.y = 0.5
+    this.triangle.height = this.triangle.height/2
+    this.triangle.width = this.triangle.width/2
+    this.scaleGroup.add(this.triangle)
+
+    this.pp1 = this.game.add.sprite(475,440,'circle')
+    this.pp1.anchor.x = 0.5
+    this.pp1.anchor.y = 0.5
+    this.pp1.height = this.pp1.height/6
+    this.pp1.width = this.pp1.width/6
+    this.scaleGroup.add(this.pp1)
+
+    this.pp2 = this.game.add.sprite(270,440,'circle')
+    this.pp2.anchor.x = 0.5
+    this.pp2.anchor.y = 0.5
+    this.pp2.height = this.pp2.height/6
+    this.pp2.width = this.pp2.width/6
+    this.balance[0].add(this.pp2)
+
+    this.pp3 = this.game.add.sprite(670,440,'circle')
+    this.pp3.anchor.x = 0.5
+    this.pp3.anchor.y = 0.5
+    this.pp3.height = this.pp3.height/6
+    this.pp3.width = this.pp3.width/6
+    this.balance[1].add(this.pp3)
+    this.game.world.bringToTop(this.balance[1])
 
     this.nextTrial()
 
@@ -226,9 +284,9 @@ Game.Run.prototype = {
       newd = new Date();
       this.RT = newd.getTime() - this.start_time;
       //check to see if they are correct
-      if (this.equalBool) {
-        this.coin.visible = true
-      }
+      //if (this.equalBool) {
+      //  this.coin.visible = true
+      //}
       this.adjustBalance()
       this.unequal.kill()
       this.equal.kill()
@@ -246,9 +304,9 @@ Game.Run.prototype = {
       newd = new Date();
       this.RT = newd.getTime() - this.start_time;
       //check to see if they are correct
-      if (!this.equalBool) {
-        this.coin.visible = true
-      }
+      //if (!this.equalBool) {
+      //  this.coin.visible = true
+      //}
       this.adjustBalance()
       this.unequal.kill()
       this.equal.kill()
@@ -284,16 +342,21 @@ Game.Run.prototype = {
       }
     }
 
+    console.log(this.buttonPressed)
+    console.log(this.trial)
+    console.log(this.equivalence)
+    console.log(this.answer)
+
     if (this.answer == "incorrect") {
       this.reps += 1
       this.streak = 0
-      giveFeedback(this, false, this.streak,'vnt',480, 400, "60px Arial")
+      giveFeedback(this, false, this.streak,'vnt',480, 500, "60px Arial")
     } else {
       if (this.reps == 0) {
         this.streak += 1
       }
       this.reps = 0
-      giveFeedback(this, true, this.streak,'vnt',480, 400, "60px Arial")
+      giveFeedback(this, true, this.streak,'vnt',480, 500, "60px Arial")
     }
 
     if (this.streak == 3 || this.streak == 7 || this.streak == 12) {
@@ -305,7 +368,6 @@ Game.Run.prototype = {
 
     that = this
     setTimeout(function() {
-    that.adjustBalance()
 
     comp1Text = that.game.add.text(143,that.waterBase1.y-(6*that.problem[0])-20,that.problem[0], {font: "50px Arial", fill: "#FFFFFF", align: "center"});
     comp1Text.anchor.y = 0.5
@@ -345,9 +407,24 @@ Game.Run.prototype = {
       hash1.forEach(function (h) { h.kill() })
       hash2.forEach(function (h) { h.kill() })
       hash3.forEach(function (h) { h.kill() })
+
+      that.game.add.tween(that.waterBase1).to({
+        height: 0
+      },500, Phaser.Easing.Quadratic.Out, true)
+
+      that.game.add.tween(that.waterBase2).to({
+        height: 0
+      },500, Phaser.Easing.Quadratic.Out, true)
+
+      that.game.add.tween(that.waterBase3).to({
+        height: 0
+      },500, Phaser.Easing.Quadratic.Out, true)
+
+      that.adjustBalance()
+
     }, 2000) //1750
 
-  }, 1100)
+  }, 1100) //1100
 
   //this.save(this.numGraded)
 
@@ -467,7 +544,7 @@ Game.Run.prototype = {
     that = this
     setTimeout(function() {
       that.makeButtons()
-    }, 3000)
+    }, 2000)
   },
 
   dropCompBall: function() {
@@ -490,7 +567,6 @@ Game.Run.prototype = {
   },
 
   adjustBalance: function() {
-
     this.submitted = true
 
     weightDiff = ((this.balance[0].weight-this.balance[1].weight)/this.balanceFriction)
@@ -501,6 +577,8 @@ Game.Run.prototype = {
       weightDiff = -this.game.height/3
     }
 
+    angDiff = (-weightDiff)/4
+
     balanceTweenComp = this.game.add.tween(this.balance[0]).to({
       y: weightDiff
     }, 1000, Phaser.Easing.Quadratic.Out, true)
@@ -509,24 +587,32 @@ Game.Run.prototype = {
       y: -weightDiff
     }, 1000, Phaser.Easing.Quadratic.Out, true)
 
+    pivotTween = this.game.add.tween(this.pivot).to({
+      angle: angDiff
+    }, 1000, Phaser.Easing.Quadratic.Out, true)
+
   },
 
   waterTable: function() {
+
     waterLevel1 = 6*this.problem[0]
     waterLevel2 = 6*this.problem[1]
     waterLevel3 = 6*this.ballsToDrop
 
-    this.game.add.tween(this.waterBase1).to({
-      height: waterLevel1
-    },1000, Phaser.Easing.Quadratic.Out, true)
+    that = this
+    setTimeout(function() {
+      that.game.add.tween(that.waterBase1).to({
+        height: waterLevel1
+      },700, Phaser.Easing.Quadratic.Out, true)
 
-    this.game.add.tween(this.waterBase2).to({
-      height: waterLevel2
-    },2000, Phaser.Easing.Quadratic.Out, true)
+      that.game.add.tween(that.waterBase2).to({
+        height: waterLevel2
+      },700, Phaser.Easing.Quadratic.Out, true)
 
-    this.game.add.tween(this.waterBase3).to({
-      height: waterLevel3
-    },2000, Phaser.Easing.Quadratic.Out, true)
+      that.game.add.tween(that.waterBase3).to({
+        height: waterLevel3
+      },700, Phaser.Easing.Quadratic.Out, true)
+    },700)
   },
 
   endTrial: function() {
@@ -556,6 +642,7 @@ Game.Run.prototype = {
   quitGame: function () {
       this.balance[0].destroy()
       this.balance[1].destroy()
+      this.scaleGroup.destroy()
       this.game.world.remove(this.pointDisplay)
       this.game.world.remove(this.progress)
 

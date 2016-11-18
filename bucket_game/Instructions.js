@@ -41,6 +41,7 @@ Game.Instructions = function (game) {
     this.rmInstructB = false
     this.inst_num = 1
     this.inst_finished = false
+    this.pressable = false
 
 };
 
@@ -53,32 +54,31 @@ Game.Instructions.prototype = {
 
   create: function () {
     problems = problemGen(this.week, this.problem_set)
+    reProblems = problemGen(this.week, this.problem_set) //repeat problem set in SPT
     this.op1s = [1]
     this.op2s = [2]
     this.problem_ids = [0]
 
+    //this.op1s = [12,10]
+    //this.op2s = [12,8]
+    //this.problem_ids = [2,2]
     //task info
     this.task = 'VS_verification'
     task_type = 'VS'
 
+    //this.logger - new Logger(this.task, this)
+
     this.points = 0
 
-    //initializing subject for this game
-    //this.results = set_up_subject(this.task)
-    //user = this.results[0]
-    //session = this.results[1]
-    //play = this.results[2]
-    //this.subject = new Subject(user, this.task, task_type, this.problem_set, session, play)
-
     equivalenceGen(false)
-    this.equivalence = equivalence
+    // this.equivalence = equivalence
+
+    this.equivalence = [2]
 
     this.game.world.setBounds(0, 0, 960, 600);
     this.game.physics.startSystem(Phaser.Physics.P2JS);
-    this.game.physics.p2.gravity.y = 400
-
-    //this.game.stage.backgroundColor = '#02425B'
-    //this.game.add.tileSprite(0,0,this.op1s.length*1000,600,'background')
+    this.game.physics.p2.restitution = 0.1;//0.75
+    this.game.physics.p2.gravity.y = 600;//400;
 
     d = new Date()
     this.startTime = d.getTime()
@@ -93,11 +93,13 @@ Game.Instructions.prototype = {
     this.balance[1] = this.game.add.group()
     this.balance[1].weight = 0
 
+    this.scaleGroup = this.game.add.group()
+
     this.jarCollisionGroup = this.game.physics.p2.createCollisionGroup()
     this.ballCollisionGroup = this.game.physics.p2.createCollisionGroup()
 
     //first trial
-    this.progress = this.game.add.text(this.game.world.centerX*2-100, 560, '1 out of 1', {font:'30px Arial', fill:'#FFFFFF', align:'center'})
+    this.progress = this.game.add.text(this.game.world.centerX*2-100, 560, '1 out of '+this.op1s.length, {font:'30px Arial', fill:'#FFFFFF', align:'center'})
     this.progress.fixedToCamera = true
     this.progress.anchor.x = 0.5
 
@@ -105,60 +107,245 @@ Game.Instructions.prototype = {
     this.pointDisplay.anchor.x = 0.5
     this.pointDisplay.fixedToCamera = true
 
-    this.nextTrial()
-
     this.leftBeam = this.game.add.sprite(this.cBalanceX,this.balanceY,'board')
-    //this.leftBeam.tint = 0x545454
     this.leftBeam.scale.x = 4
-    this.leftBeam.scale.y = 6
+    this.leftBeam.scale.y = 5//6
     this.leftBeam.anchor.x = 0.5
     this.leftBeam.anchor.y = 0.5
     this.leftBeam.enableBody = true
-    this.game.physics.enable(this.leftBeam)
+    this.game.physics.p2.enableBody(this.leftBeam)
     this.leftBeam.body.immovable = true
+    this.leftBeam.body.static = true
+    this.leftBeam.body.setCollisionGroup(this.jarCollisionGroup)
+    this.leftBeam.body.collides([this.ballCollisionGroup])
     this.balance[0].add(this.leftBeam)
 
     this.rightBeam = this.game.add.sprite(this.uBalanceX,this.balanceY,'board')
-    //this.rightBeam.tint = 0x939393
     this.rightBeam.scale.x = 4
-    this.rightBeam.scale.y = 6
+    this.rightBeam.scale.y = 5//6
     this.rightBeam.anchor.x = 0.5
     this.rightBeam.anchor.y = 0.5
+    this.game.physics.p2.enableBody(this.rightBeam)
+    this.rightBeam.body.immovable = true
+    this.rightBeam.body.static = true
+    this.rightBeam.body.setCollisionGroup(this.jarCollisionGroup)
+    this.rightBeam.body.collides([this.ballCollisionGroup])
+
     this.balance[1].add(this.rightBeam)
 
-    this.leftJar = this.makeJar(175, 300, 'small')
-    this.leftJar2 = this.makeJar(375, 300, 'small')
-    this.balance[0].add(this.leftJar)
-    this.balance[0].add(this.leftJar2)
-    this.rightJar = this.makeJar(670,280, 'large')
-    this.balance[1].add(this.rightJar)
+    this.waterBase1 = this.makeWaterBase(168, 300, 'small')
+    this.waterBase1.anchor.y = 1
+    this.waterBase1.height = 0
 
-    that = this
-    setTimeout(function() {
-      that.dropCompBall()
-    }, 800)
+    this.waterBase2 = this.makeWaterBase(368, 300, 'small')
+    this.waterBase2.anchor.y = 1
+    this.waterBase2.height = 0
+    this.balance[0].add(this.waterBase1)
+    this.balance[0].add(this.waterBase2)
+
+    this.waterBase3 = this.makeWaterBase(663,300, 'small')
+    this.waterBase3.anchor.y = 1
+    this.waterBase3.height = 0
+    this.balance[1].add(this.waterBase3)
+
+    measure1 = this.game.add.sprite(-95,31,'measurer')
+    measure1.height = measure1.height/1.5
+    measure1.width = measure1.width*1.8
+    this.balance[0].add(measure1)
+
+    measure2 = this.game.add.sprite(105,31,'measurer')
+    measure2.height = measure2.height/1.5
+    measure2.width = measure2.width*1.8
+    this.balance[0].add(measure2)
+
+    measure3 = this.game.add.sprite(400,31,'measurer')
+    measure3.height = measure3.height/1.5
+    measure3.width = measure3.width*1.8
+    this.balance[1].add(measure3)
+
+    this.pivot = this.game.add.sprite(480,440,'board')
+    this.pivot.anchor.x = 0.5
+    this.pivot.anchor.y = 0.5
+    this.pivot.width = this.pivot.width*4
+    this.pivot.height = this.pivot.height*2
+    this.scaleGroup.add(this.pivot)
+
+    this.attach1 = this.game.add.sprite(270,400,'board')
+    this.attach1.anchor.x = 0.5
+    this.attach1.anchor.y = 0.5
+    this.attach1.height = this.attach1.height*13
+    this.attach1.width = this.attach1.width/2
+    this.balance[0].add(this.attach1)
+
+    this.attach2 = this.game.add.sprite(670,400,'board')
+    this.attach2.anchor.x = 0.5
+    this.attach2.anchor.y = 0.5
+    this.attach2.height = this.attach2.height*13
+    this.attach2.width = this.attach2.width/2
+    this.balance[1].add(this.attach2)
+
+    this.triangle = this.game.add.sprite(475,435,'triangle')
+    this.triangle.anchor.x = 0.5
+    this.triangle.anchor.y = 0.5
+    this.triangle.height = this.triangle.height/2
+    this.triangle.width = this.triangle.width/2
+    this.scaleGroup.add(this.triangle)
+
+    this.pp1 = this.game.add.sprite(475,440,'circle')
+    this.pp1.anchor.x = 0.5
+    this.pp1.anchor.y = 0.5
+    this.pp1.height = this.pp1.height/6
+    this.pp1.width = this.pp1.width/6
+    this.scaleGroup.add(this.pp1)
+
+    this.pp2 = this.game.add.sprite(270,440,'circle')
+    this.pp2.anchor.x = 0.5
+    this.pp2.anchor.y = 0.5
+    this.pp2.height = this.pp2.height/6
+    this.pp2.width = this.pp2.width/6
+    this.balance[0].add(this.pp2)
+
+    this.pp3 = this.game.add.sprite(670,440,'circle')
+    this.pp3.anchor.x = 0.5
+    this.pp3.anchor.y = 0.5
+    this.pp3.height = this.pp3.height/6
+    this.pp3.width = this.pp3.width/6
+    this.balance[1].add(this.pp3)
+    this.game.world.bringToTop(this.balance[1])
+
+    this.nextTrial()
 
     this.instruct(this.inst_num)
 
   },
 
-  makeJar: function(x,y, type) {
-    if (type == 'small') {
-      jar = this.game.add.sprite(x,y,'jarSmall')
-      dat = 'smalljarData'
-      sub = 'jar2'
+  instruct: function(num) {
+    if (num == 1) {
+      this.back_ground = this.makeBox(220,370,500,190)
+      instruct_text = that.game.add.text(this.game.world.centerX-5,425,
+        "In this game, test tubes will\n fill with water like this...",
+      {font: "20px Arial", fill: "#FFFFFF", align: "center"})
+      instruct_text.anchor.x = (0.5,0.5)
+      this.nextB = this.add.button(475, 500, 'next', function () {
+        this.game.world.remove(instruct_text)
+        this.rmInstructB = true
+      }, this);
+      this.inst_finished = false
+      this.nextB.anchor.x = (0.5,0.5)
+      this.nextB.scale.setTo(0.5,0.5)
+    } else if (num == 2) {
+      this.back_ground = this.makeBox(220,370,500,190)
+      this.arrows = this.game.add.group()
+      this.arrow1 = this.game.add.sprite(220,340,'arrow')
+      this.arrow1.scale.x = 0.3
+      this.arrow1.scale.y = 0.4
+      this.arrow1.angle = this.arrow1.angle-25
+      this.arrows.add(this.arrow1)
+      this.arrow2 = this.game.add.sprite(330,330,'arrow')
+      this.arrow2.scale.x = 0.4
+      this.arrow2.scale.y = 0.38
+      this.arrow2.angle = this.arrow2.angle+25
+      this.arrows.add(this.arrow2)
+      this.arrow3 = this.game.add.sprite(645,330,'arrow')
+      this.arrow3.scale.x = 0.4
+      this.arrow3.scale.y = 0.4
+      this.arrows.add(this.arrow3)
+      rect1 = this.game.add.graphics(220,340)
+      rect1.lineStyle(2, 0xff5b5b, 1);
+      rect1.drawRect(67,110, 115, 30)
+      this.arrows.add(rect1)
+      rect2 = this.game.add.graphics(508,340)
+      rect2.lineStyle(2, 0xff5b5b, 1);
+      rect2.drawRect(67,110, 86, 30)
+      this.arrows.add(rect2)
+      instruct_text = that.game.add.text(this.game.world.centerX-5,425,
+        "Your job is to say whether the water in\nthese tubes equals the water in this tube",
+      {font: "20px Arial", fill: "#FFFFFF", align: "center"})
+      instruct_text.anchor.x = (0.5,0.5)
+      this.nextB = this.add.button(475, 500, 'next', function () {
+        this.game.world.remove(instruct_text)
+        this.game.world.remove(this.arrows)
+        this.rmInstructB = true
+        this.pressable = true
+      }, this);
+      this.inst_finished = false
+      this.nextB.anchor.x = (0.5,0.5)
+      this.nextB.scale.setTo(0.5,0.5)
+    } else if (num == 3) {
+      this.back_ground = this.makeBox(220,290,500,190)
+      instruct_text = that.game.add.text(this.game.world.centerX-5,325,
+        "If the two sides are equal, touch the equal button.\n If they not equal, press the unequal button.\n Press next to give your answer now!",
+      {font: "20px Arial", fill: "#FFFFFF", align: "center"})
+      instruct_text.anchor.x = (0.5,0.5)
+      this.nextB = this.add.button(475, 425, 'next', function () {
+        this.game.world.remove(instruct_text)
+        this.rmInstructB = true
+      }, this);
+      this.inst_finished = false
+      this.nextB.anchor.x = (0.5,0.5)
+      this.nextB.scale.setTo(0.5,0.5)
     } else {
-      jar = this.game.add.sprite(x,y,'jar')
-      dat = 'jarData'
-      sub = 'jar'
+      this.inst_finished = true
     }
-    this.game.physics.p2.enableBody(jar)
-    jar.body.clearShapes()
-    jar.body.loadPolygon(dat,sub)
-    jar.body.setCollisionGroup(this.jarCollisionGroup)
-    jar.body.collides([this.ballCollisionGroup])//, this.leftBall2CollisionGroup])
-    jar.body.static = true
-    return jar
+  },
+
+  makeBox: function(x,y,width,height) {
+    rect = this.game.add.graphics(x,y)
+    rect.lineStyle(2, 0x13bee3, 1);
+    rect.beginFill(0x0c3ef0, 1)
+    rect.drawRect(0,0, width, height)
+    return rect
+  },
+
+  drawScale: function(x,value) {
+    hashes = this.game.add.group()
+    hashY = 103
+    for (i = 0; i < 35; i++) {
+      if (35-i == value) {
+        lineWidth = 4
+        lineStart = -70
+        lineEnd = 90
+      } else {
+        lineWidth = 2
+        lineStart = 0
+        lineEnd = 20
+      }
+      hashMark = this.game.add.graphics(x+lineStart,hashY)
+      hashMark.lineStyle(lineWidth, 0xFFFFFF)
+      hashMark.lineTo(lineEnd,0)
+      hashes.add(hashMark)
+      hashY = hashY + 6
+    }
+    return hashes
+  },
+
+  makeWaterBase: function(x,y, type) {
+    water_base = this.game.add.sprite(x,y+13,'water_base')
+    water_base.width = water_base.width-3
+    left_wall = this.game.add.sprite(x-47,0,'board')
+    right_wall = this.game.add.sprite(x+47,0,'board')
+    this.game.physics.p2.enableBody(water_base)
+    water_base.body.setCollisionGroup(this.jarCollisionGroup)
+    water_base.body.collides([this.ballCollisionGroup])
+    water_base.body.static = true
+
+    left_wall.height = left_wall.height*100
+    left_wall.width = 10
+    this.game.physics.p2.enableBody(left_wall)
+    left_wall.body.setCollisionGroup(this.jarCollisionGroup)
+    left_wall.body.collides([this.ballCollisionGroup])
+    left_wall.body.static = true
+    left_wall.alpha = 0
+
+    right_wall.height = left_wall.height*100
+    right_wall.width = 10
+    this.game.physics.p2.enableBody(right_wall)
+    right_wall.body.setCollisionGroup(this.jarCollisionGroup)
+    right_wall.body.collides([this.ballCollisionGroup])
+    right_wall.body.static = true
+    right_wall.alpha = 0
+
+  return water_base
   },
 
   makeButtons: function() {
@@ -169,15 +356,14 @@ Game.Instructions.prototype = {
     this.equal.scale.x = .3
     this.equal.scale.y = .3
     this.equal.onInputDown.add(function() {
-      if (this.inst_finished) {
-        this.game.world.remove(this.instruct_text)
+      if (this.pressable) {
         this.buttonPressed = 'equal'
         newd = new Date();
         this.RT = newd.getTime() - this.start_time;
         //check to see if they are correct
-        if (this.equalBool) {
-          this.coin.visible = true
-        }
+        //if (this.equalBool) {
+        //  this.coin.visible = true
+        //}
         this.adjustBalance()
         this.unequal.kill()
         this.equal.kill()
@@ -185,7 +371,6 @@ Game.Instructions.prototype = {
         setTimeout(function() {
           that.grade(that.start_time)
         }, 1000)
-
       }
     }, this)
 
@@ -193,15 +378,14 @@ Game.Instructions.prototype = {
     this.unequal.scale.x = 0.3
     this.unequal.scale.y = 0.3
     this.unequal.onInputDown.add(function() {
-      if (this.inst_finished) {
-        this.game.world.remove(this.instruct_text)
+      if (this.pressable) {
         this.buttonPressed = 'unequal'
         newd = new Date();
         this.RT = newd.getTime() - this.start_time;
         //check to see if they are correct
-        if (!this.equalBool) {
-          this.coin.visible = true
-        }
+        //if (!this.equalBool) {
+        //  this.coin.visible = true
+        //}
         this.adjustBalance()
         this.unequal.kill()
         this.equal.kill()
@@ -209,37 +393,36 @@ Game.Instructions.prototype = {
         setTimeout(function() {
           that.grade(that.start_time)
         }, 1000)
-
       }
     }, this)
   },
 
   grade: function(time_stamp) {
-    if (this.buttonPressed == 'equal') { //it is equal and they are correct
-      this.answer = 'correct'
-      this.points += 1
-    } else if (this.buttonPressed == 'unequal') {
+
+    if (this.buttonPressed == 'equal') {
       this.answer = 'incorrect'
-      if (this.points == 0) {
-        this.points = 0
-      } else {
-        this.points -= 1
-      }
+      this.points-=1
+    } else {
+      this.answer = 'correct'
+      this.points+=1
+    }
+    if (this.points < 0) {
+      this.points = 0
     }
 
     if (this.answer == "incorrect") {
       this.reps += 1
       this.streak = 0
-      giveFeedback(this, false, this.streak,'vnt',480, 50, "60px Arial")
+      giveFeedback(this, false, this.streak,'vnt',480, 500, "60px Arial")
     } else {
       if (this.reps == 0) {
         this.streak += 1
       }
       this.reps = 0
-      giveFeedback(this, true, this.streak,'vnt',480, 50, "60px Arial")
+      giveFeedback(this, true, this.streak,'vnt',480, 500, "60px Arial")
     }
 
-    if (this.streak == 3 || this.streak == 7 || this.streak == 13) {
+    if (this.streak == 3 || this.streak == 7 || this.streak == 12) {
       this.points += 1
     }
 
@@ -248,62 +431,34 @@ Game.Instructions.prototype = {
 
     that = this
     setTimeout(function() {
-    that.adjustBalance()
 
-    comp1Text = that.game.add.text(175, (that.balance[0].y + that.leftJar.y),that.problem[0], {font: "60px Arial", fill: "#FFFFFF", align: "center"});
-    comp2Text = that.game.add.text(375, (that.balance[0].y + that.leftJar2.y),that.problem[1], {font: "60px Arial", fill: "#FFFFFF", align: "center"});
-    userText = that.game.add.text(655, (that.balance[1].y + that.rightJar.y),that.numUserBalls, {font: "60px Arial", fill: "#FFFFFF", align: "center"});
-    plus = that.game.add.text(275, (that.balance[0].y + that.leftJar2.y),'+', {font: "60px Arial", fill: "#FFFFFF", align: "center"});
+    comp1Text = that.game.add.text(143,that.waterBase1.y-(6*that.problem[0])-20,that.problem[0], {font: "50px Arial", fill: "#FFFFFF", align: "center"});
+    comp1Text.anchor.y = 0.5
+    that.balance[0].add(comp1Text)
 
-    if (that.answer == 'correct') {
-      equalSign = that.game.add.text(510, (that.balance[0].y + that.leftJar2.y),'=', {font: "60px Arial", fill: "#FFFFFF", align: "center"});
+    comp2Text = that.game.add.text(343,that.waterBase2.y-(6*that.problem[1])-20,that.problem[1], {font: "50px Arial", fill: "#FFFFFF", align: "center"});
+    comp2Text.anchor.y = 0.5
+    that.balance[0].add(comp2Text)
+
+    userText = that.game.add.text(633,that.waterBase3.y-(6*that.numUserBalls)-20,that.numUserBalls, {font: "50px Arial", fill: "#FFFFFF", align: "center"});
+    userText.anchor.y = 0.5
+    that.balance[1].add(userText)
+
+    hash1 = that.drawScale(195,that.problem[0])
+    that.balance[0].add(hash1)
+
+    hash2 = that.drawScale(395,that.problem[1])
+    that.balance[0].add(hash2)
+
+    hash3 = that.drawScale(690,that.numUserBalls)
+    that.balance[1].add(hash3)
+
+    if (that.equivalence[that.trial-1] == 1) {
+      equalSign = that.game.add.text(510, that.balance[0].y+200,'=', {font: "60px Arial", fill: "#FFFFFF", align: "center"});
     } else {
-      equalSign = that.game.add.text(510, (that.balance[0].y + that.leftJar2.y),'≠', {font: "60px Arial", fill: "#FFFFFF", align: "center"});
+      equalSign = that.game.add.text(510, that.balance[0].y+200,'≠', {font: "60px Arial", fill: "#FFFFFF", align: "center"});
     }
-
-    that.game.add.tween(comp1Text).to({
-      y: -weightDiff+50
-    }, 1000, Phaser.Easing.Quadratic.Out, true)
-    that.game.add.tween(comp2Text).to({
-      y: -weightDiff+50
-    }, 1000, Phaser.Easing.Quadratic.Out, true)
-    that.game.add.tween(userText).to({
-      y: -weightDiff+50
-    }, 1000, Phaser.Easing.Quadratic.Out, true)
-    that.game.add.tween(plus).to({
-      y: -weightDiff+50
-    }, 1000, Phaser.Easing.Quadratic.Out, true)
-    that.game.add.tween(equalSign).to({
-      y: -weightDiff+50
-    }, 1000, Phaser.Easing.Quadratic.Out, true)
-
-    spaceFactor = 50 //handling edge cases for double digit text
-    if (comp1Text.width > 34) {  //so #hacky
-      spaceFactor1 = 70
-      spaceFactor2 = 0
-    } else if (comp2Text.width > 34) {
-      spaceFactor2 = 80
-      spaceFactor1 = spaceFactor
-    } else {
-      spaceFactor1 = spaceFactor
-      spaceFactor2 = 0
-    }
-
-    that.game.add.tween(comp1Text).to({
-      x: 465 - spaceFactor2 - spaceFactor1 * 2
-    }, 1000, Phaser.Easing.Quadratic.Out, true)
-    that.game.add.tween(comp2Text).to({
-      x: 465 - spaceFactor2
-    }, 1000, Phaser.Easing.Quadratic.Out, true)
-    that.game.add.tween(userText).to({
-      x: 465 - spaceFactor2/2 + spaceFactor * 2
-    }, 1000, Phaser.Easing.Quadratic.Out, true)
-    that.game.add.tween(plus).to({
-      x: 465 - spaceFactor2 - spaceFactor
-    }, 1000, Phaser.Easing.Quadratic.Out, true)
-    that.game.add.tween(equalSign).to({
-      x: 465 + spaceFactor - spaceFactor2/2
-    }, 1000, Phaser.Easing.Quadratic.Out, true)
+    plus = that.game.add.text(255, that.balance[0].y+200,'+', {font: "60px Arial", fill: "#FFFFFF", align: "center"});
 
     that.endTrial()
     setTimeout(function() {
@@ -312,36 +467,69 @@ Game.Instructions.prototype = {
       userText.kill()
       plus.kill()
       equalSign.kill()
-    }, 1750)
+      hash1.forEach(function (h) { h.kill() })
+      hash2.forEach(function (h) { h.kill() })
+      hash3.forEach(function (h) { h.kill() })
 
-    that.balance[0].forEach(function(ball){
-      if (ball.key == "balls") {
-        ball.kill()
-      }
-    }, that)
-    that.balance[1].forEach(function(ball){
-      if (ball.key == "balls") {
-        ball.kill()
-      }
-    }, that)
-  }, 1100)
+      that.game.add.tween(that.waterBase1).to({
+        height: 0
+      },500, Phaser.Easing.Quadratic.Out, true)
+
+      that.game.add.tween(that.waterBase2).to({
+        height: 0
+      },500, Phaser.Easing.Quadratic.Out, true)
+
+      that.game.add.tween(that.waterBase3).to({
+        height: 0
+      },500, Phaser.Easing.Quadratic.Out, true)
+
+      that.adjustBalance()
+
+    }, 2000) //1750
+
+  }, 1100) //1100
+
+  //this.save(this.numGraded)
 
   },
 
+  save: function (curr_trial) {
+    if (this.buttonPressed == 'equal') {
+      this.logger.inputData('answer', 0)
+    } else {
+      this.logger.inputData('answer', 1)
+    }
 
+    this.logger.inputData('problem', [this.problem[0],' + ',this.problem[1],' = ',this.ballsToDrop].join(""))
+    this.logger.inputData('RT', this.RT/1000)
+    this.logger.inputData('n1', parseInt(this.problem[0]))
+    this.logger.inputData('n2', parseInt(this.problem[1]))
+    this.logger.inputData('points', this.points)
+    this.logger.inputData('problem_id', parseInt(this.problem[3]))
+    this.logger.inputData('solution', parseInt(this.problem[2]))
+
+    if (this.answer == 'correct') {
+      this.logger.inputData('ACC', 1)
+      trialData.ACC[curr_trial-1] == 1
+    } else  {
+      this.logger.inputData('ACC', 0)
+      trialData.ACC[curr_trial-1] == 0
+    }
+
+    this.numGraded++
+    if (this.trial >= this.op1s.length && this.answer == 'correct') {
+      this.logger.inputData('finished', 1)
+    } else {
+      this.logger.inputData('finished', 0)
+    }
+
+    this.logger.sendData(this.numGraded)
+
+  },
 
   nextTrial: function() {
     var d = new Date();
     this.start_time = d.getTime();
-    //reset the RT counter
-    if (this.answer == "correct" || this.trial == 0) {
-      if (this.trial == 0) {
-        this.progress.setText(1 + ' out of 1')
-        this.pointDisplay.setText("Coins: " + this.points)
-      } else {
-        this.progress.setText(this.trial+1 + ' out of 1')
-        this.pointDisplay.setText("Coins: " + this.points)
-      }
       if (this.op1s[this.trial] <= 9) {
           op1 = '  ' + this.op1s[this.trial];
       } else { op1 = this.op1s[this.trial];}
@@ -353,28 +541,27 @@ Game.Instructions.prototype = {
       this.problem[1] = +op2;
       this.problem[2] = +op1 + +op2;
       this.problem[3] = this.problem_ids[this.trial]
-      this.trial++
-    } else if (this.answer == "incorrect") {
-      this.problem[0] = this.problem[0]
-      this.problem[1] = this.problem[1]
-      this.problem[2] = this.problem[2]
-      this.problem[3] = this.problem[3]
+    if (this.answer == "incorrect") {
+        this.op1s.push(this.op1s[this.trial])
+        this.op2s.push(this.op2s[this.trial])
+        this.problem_ids.push(this.problem_ids[this.trial])
+        this.equivalence.push(this.equivalence[this.trial])
     }
+    if (this.trial == 0) {
+      this.progress.setText(1 + ' out of '+this.op1s.length)
+      this.pointDisplay.setText("Coins: " + this.points)
+    } else {
+      this.progress.setText(this.trial+1 + ' out of '+this.op1s.length)
+      this.pointDisplay.setText("Coins: " + this.points)
+    }
+    this.trial++
 
-    this.dispenser1 = this.game.add.sprite(100,-130,'dispenser')
-    this.dispenser1.scale.x = 0.3
-    this.dispenser1.scale.y = 0.3
+    this.problem[0] = [1]
+    this.problem[1] = [2]
+    this.problem[2] = this.equivalence[0]
 
-    this.dispenser2 = this.game.add.sprite(307,-130,'dispenser')
-    this.dispenser2.scale.x = 0.3
-    this.dispenser2.scale.y = 0.3
-
-    this.dispenser3 = this.game.add.sprite(600,-130,'dispenser')
-    this.dispenser3.scale.x = 0.3
-    this.dispenser3.scale.y = 0.3
-
-    this.startDispensing = true
-    //this.game.paused = true
+    this.dropBall()
+    this.waterTable()
 
     this.numCompBalls = this.problem[2]
     this.balance[0].weight = (3000 * this.numCompBalls)
@@ -382,117 +569,54 @@ Game.Instructions.prototype = {
   },
 
   makeBalls: function(x,numBalls,bal) {
-    for (i = 0; i < numBalls; i++) { //this.problem[0]
-      ball = this.game.add.sprite(x,(60-i*20),"balls")
+    numBalls = 15
+    y = 300
+    for (i = 0; i < numBalls; i++) {
+      if (i < 8) {
+        ball = this.game.add.sprite(x-45+(i*8),y,"balls")
+      } else {
+        ball = this.game.add.sprite(x-45+((i-8)*8),y-6,"balls")
+      }
+      //ball = this.game.add.sprite(x,(60-i*20),"balls")
+      //ball.width = ball.width/2
+      //ball.height = ball.height/2
       this.game.physics.p2.enableBody(ball)
+      ball.body.setCircle(ball.width * 0.3); //0.3
       ball.body.setCollisionGroup(this.ballCollisionGroup)
       ball.body.collides([this.jarCollisionGroup, this.ballCollisionGroup])//, this.leftBall2CollisionGroup])
-      ball.body.mass = 500
+      //ball.body.mass = 50
+      //ball.body.damping = 0.3;
       this.balance[bal].add(ball)
+      //ball.filters = [this.blurX, this.blurY,this.threshold]
+      //ball.filterArea = this.game.camera.view;
     }
   },
 
   dropBall: function() {
 
-    this.equalBool = true
-
+    if (this.equivalence[this.trial-1] == 1) {
+      this.equalBool = true
+    } else {
+      this.equalBool = false
+    }
     if (this.equalBool) {
       this.coin = this.game.add.sprite(540,500,'coin')
     } else {
       this.coin = this.game.add.sprite(380,500,'coin')
     }
     this.coin.visible = false
-
-    if (this.buttonPressed == 'none' || this.answer == 'correct') {
-      this.ballsToDrop = unequalGen(this.equalBool, this.problem[2], this.problem[0], this.problem[1])
-    } else if (this.answer == 'incorrect'){
-      this.ballsToDrop = this.ballsToDrop
-    }
-
-    this.makeBalls(this.uBalanceX-5,this.ballsToDrop,1)
+    this.ballsToDrop = unequalGen(this.equalBool, this.problem[2], this.problem[0], this.problem[1])
     this.numUserBalls = this.ballsToDrop
-
     this.balance[1].weight = (3000 * this.numUserBalls)
-
-    that = this
-    setTimeout(function() {
-      that.makeButtons()
-    }, 3000)
-  },
-
-  instruct: function(num) {
-    if (num == 1) {
-      instruct_text = that.game.add.text(this.game.world.centerX,450,"Dispensers will drop balls in each jar like this",
-      {font: "20px Arial", fill: "#FFFFFF", align: "center"})
-      instruct_text.anchor.x = (0.5,0.5)
-      this.nextB = this.add.button(instruct_text.width+300, 450, 'next', function () {
-        this.game.world.remove(instruct_text)
-        this.rmInstructB = true
-      }, this);
-      this.nextB.scale.setTo(0.5,0.5)
-    } else if (num == 2) {
-      instruct_text = that.game.add.text(240,100,
-        "You need to say whether the number of balls in",
-        {font: "20px Arial", fill: "#FFFFFF", align: "center"})
-      twojar = that.game.add.text(220,150,
-        "these two jars",
-        {font: "20px Arial", fill: "#FFFFFF", align: "center"})
-      eq = that.game.add.text(430,150,
-        "equals those",
-        {font: "20px Arial", fill: "#FFFFFF", align: "center"})
-      onejar = that.game.add.text(630,150,
-        "in this jar",
-        {font: "20px Arial", fill: "#FFFFFF", align: "center"})
-      guess_text = that.game.add.text(180,400,
-        "Try NOT to count the balls but make your best guess instead",
-        {font: "20px Arial", fill: "#FFFFFF", align: "center"})
-      this.nextB = this.add.button(430, 430, 'next', function () {
-        this.game.world.remove(instruct_text)
-        this.game.world.remove(twojar)
-        this.game.world.remove(eq)
-        this.game.world.remove(onejar)
-        this.game.world.remove(guess_text)
-        this.rmInstructB = true
-      }, this);
-      this.nextB.scale.setTo(0.5,0.5)
-    } else if (num == 3) {
-      instruct_text = that.game.add.text(this.game.world.centerX,450,
-        "Use these buttons to give your answer",
-        {font: "20px Arial", fill: "#FFFFFF", align: "center"})
-      instruct_text.anchor.x = (0.5,0.5)
-      this.nextB = this.add.button(this.game.world.centerX+200, 450, 'next', function () {
-        this.game.world.remove(instruct_text)
-        this.rmInstructB = true
-      }, this);
-      this.nextB.scale.setTo(0.5,0.5)
-    } else if (num == 4) {
-     instruct_text = that.game.add.text(this.game.world.centerX,100,
-       "If you're correct then you will move on to another problem.\nIf you're wrong then you will have to repeat this one.",
-       {font: "20px Arial", fill: "#FFFFFF", align: "center"})
-       instruct_text.anchor.x = (0.5,0.5)
-     this.nextB = this.add.button(450, 170, 'next', function () {
-       this.game.world.remove(instruct_text)
-       this.rmInstructB = true
-     }, this);
-     this.nextB.scale.setTo(0.5,0.5)
-   }  else if (num == 5) {
-     this.instruct_text = that.game.add.text(this.game.world.centerX,100,
-       "Go ahead and give your answer to this problem.",
-       {font: "20px Arial", fill: "#FFFFFF", align: "center"})
-       this.instruct_text.anchor.x = (0.5,0.5)
-       this.inst_finished = true
-   }
+    this.makeButtons()
   },
 
   dropCompBall: function() {
-    this.makeBalls(180-5,this.problem[0],0)
-
     var that = this
     setTimeout(function() {
       setTimeout(function() {
         that.comp2Dropped = true
       }, 10) //2500
-      that.makeBalls(380,that.problem[1],0)
     }, 10) //3000
 
       setTimeout(function() {
@@ -507,7 +631,6 @@ Game.Instructions.prototype = {
   },
 
   adjustBalance: function() {
-
     this.submitted = true
 
     weightDiff = ((this.balance[0].weight-this.balance[1].weight)/this.balanceFriction)
@@ -518,6 +641,8 @@ Game.Instructions.prototype = {
       weightDiff = -this.game.height/3
     }
 
+    angDiff = (-weightDiff)/4
+
     balanceTweenComp = this.game.add.tween(this.balance[0]).to({
       y: weightDiff
     }, 1000, Phaser.Easing.Quadratic.Out, true)
@@ -526,10 +651,35 @@ Game.Instructions.prototype = {
       y: -weightDiff
     }, 1000, Phaser.Easing.Quadratic.Out, true)
 
+    pivotTween = this.game.add.tween(this.pivot).to({
+      angle: angDiff
+    }, 1000, Phaser.Easing.Quadratic.Out, true)
+
+  },
+
+  waterTable: function() {
+
+    waterLevel1 = 6*this.problem[0]
+    waterLevel2 = 6*this.problem[1]
+    waterLevel3 = 6*this.ballsToDrop
+
+    that = this
+    setTimeout(function() {
+      that.game.add.tween(that.waterBase1).to({
+        height: waterLevel1
+      },700, Phaser.Easing.Quadratic.Out, true)
+
+      that.game.add.tween(that.waterBase2).to({
+        height: waterLevel2
+      },700, Phaser.Easing.Quadratic.Out, true)
+
+      that.game.add.tween(that.waterBase3).to({
+        height: waterLevel3
+      },700, Phaser.Easing.Quadratic.Out, true)
+    },700)
   },
 
   endTrial: function() {
-
     var that = this
     if ((this.trial) >= this.op1s.length && this.answer == 'correct') {
       this.pointDisplay.setText("Coins: " + this.points)
@@ -545,12 +695,7 @@ Game.Instructions.prototype = {
         this.game.world.remove(this.coin)
       }
       setTimeout(function() {
-      that.nextTrial()
-      setTimeout(function() {
-        that.dropCompBall()
-      }, 800)
-      that.numUserBalls = 0
-      that.balance[1].weight = 0
+        that.nextTrial()
       }, 2500)
     }
   },
@@ -558,41 +703,17 @@ Game.Instructions.prototype = {
   update: function() {
     if (this.rmInstructB) {
       this.game.world.remove(this.nextB)
+      this.game.world.remove(this.back_ground)
       this.rmInstructB = false
       this.inst_num += 1
       this.instruct(this.inst_num)
     }
-
-
-    if (this.startDispensing == true) {
-      if (this.dispenser1.y < -5) {
-        this.dispenser1.y+= 4
-        this.dispenser2.y+= 4
-        this.dispenser3.y+= 4
-      } else {
-        this.startDispensing = false
-        this.stopDispensing = true
-      }
-    }
-    if (this.stopDispensing == true) {
-      that = this
-      setTimeout(function() {
-        if (that.dispenser1.y > -130) {
-          that.dispenser1.y-= 4
-          that.dispenser2.y-= 4
-          that.dispenser3.y-= 4
-        } else {
-          that.stopDispensing = false
-        }
-      }, 3000) //minimize this
-
-    }
-
   },
 
   quitGame: function () {
       this.balance[0].destroy()
       this.balance[1].destroy()
+      this.scaleGroup.destroy()
       this.game.world.remove(this.pointDisplay)
       this.game.world.remove(this.progress)
 
@@ -610,9 +731,8 @@ Game.Instructions.prototype = {
         instructions = this.game.add.text(490, 250, 'Nice job! Make sense? If so you can get started by pressing the "go" button.\nIf not, you can repeat the instructions by clicking the "back" button\nYou will complete 12 problems in the main game.', {font:'20px Arial', fill:'#FFFFFF', align:'center'});
         instructions.anchor.x = 0.5
         instructions.lineSpacing = -8
-        this.go = this.add.button(250, 375, 'go', function () {this.state.start('Run', true, false, this.week, this.problem_set);}, this);
-        this.back = this.add.button(650, 375, 'back', function () {this.state.start('Instructions', true, false, this.week, this.problem_set);}, this);
-
+        this.go = this.add.button(250, 375, 'go', function () {this.state.start('Run', true, false, this.problem_set);}, this);
+        this.back = this.add.button(650, 375, 'back', function () {this.state.start('Instructions', true, false, this.problem_set);}, this);
       }, this);
   }
 };
