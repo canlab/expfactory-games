@@ -274,7 +274,7 @@ Game.Instructions.prototype = {
     } else if (num == 3) {
       this.back_ground = this.makeBox(220,290,500,190)
       instruct_text = that.game.add.text(this.game.world.centerX-5,325,
-        "If the two sides are equal, touch the equal button.\n If they not equal, press the unequal button.\n Press next to give your answer now!",
+        "If the two sides are equal, touch the equal button.\n If they not equal, touch the unequal button.\n Press next to give your answer now!",
       {font: "20px Arial", fill: "#FFFFFF", align: "center"})
       instruct_text.anchor.x = (0.5,0.5)
       this.nextB = this.add.button(475, 425, 'next', function () {
@@ -720,6 +720,7 @@ Game.Instructions.prototype = {
       this.trial = 0
       this.inst_num = 1
       this.inst_finished = false
+      this.pressable = false
 
       d = new Date()
       endTime = d.getTime()
@@ -728,7 +729,7 @@ Game.Instructions.prototype = {
 
       //Let them know it's done...
       this.game.time.events.add(Phaser.Timer.SECOND, function () {
-        instructions = this.game.add.text(490, 250, 'Nice job! Make sense? If so you can get started by pressing the "go" button.\nIf not, you can repeat the instructions by clicking the "back" button\nYou will complete 12 problems in the main game.', {font:'20px Arial', fill:'#FFFFFF', align:'center'});
+        instructions = this.game.add.text(490, 250, 'Nice job! Make sense? If so you can get started by pressing the "go" button.\nIf not, you can repeat the instructions by clicking the "back" button\nYou will complete 24 problems in the main game.', {font:'20px Arial', fill:'#FFFFFF', align:'center'});
         instructions.anchor.x = 0.5
         instructions.lineSpacing = -8
         this.go = this.add.button(250, 375, 'go', function () {this.state.start('Run', true, false, this.problem_set);}, this);

@@ -342,11 +342,6 @@ Game.Run.prototype = {
       }
     }
 
-    console.log(this.buttonPressed)
-    console.log(this.trial)
-    console.log(this.equivalence)
-    console.log(this.answer)
-
     if (this.answer == "incorrect") {
       this.reps += 1
       this.streak = 0
