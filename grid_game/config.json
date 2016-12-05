@@ -11,9 +11,10 @@
                 "Menu.js",
                 "Instructions.js",
                 "Run.js",
-                "problems.js"
+                "problems.js",
+                "lodash.js"
                ],
-        "exp_id": "bucket_game",
+        "exp_id": "grid_game",
         "cognitive_atlas_task_id": [],
         "contributors": [
                          "Jonathan Nicholas",
